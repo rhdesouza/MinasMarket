@@ -8,5 +8,8 @@ import java.util.UUID;
 public class AnnouncementImage {
     private UUID id;
     private UUID announcementId;
-    private String title;
+    private String fileName;
+    private String fileType;
+    private Long size;
+    private byte[] data;
 }

@@ -1,10 +1,10 @@
 package com.minas.market.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.util.UUID;
 
@@ -16,12 +16,17 @@ import java.util.UUID;
 public class AnnouncementImageEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @NotNull
     @Column(name = "announcement_id")
     private UUID announcementId;
-    private String title;
+    @Column(name = "file_name")
+    private String fileName;
+    @Column(name = "file_type")
+    private String fileType;
+    @Column
+    private Long size;
     @Lob
-    private byte[] image;
+    private byte[] data;
 
 }
