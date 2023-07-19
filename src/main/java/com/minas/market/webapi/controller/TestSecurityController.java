@@ -53,4 +53,7 @@ public class TestSecurityController {
 
     }
 
+    private Boolean teste(String dados){
+        return dados == "teste";
+    }
 }
