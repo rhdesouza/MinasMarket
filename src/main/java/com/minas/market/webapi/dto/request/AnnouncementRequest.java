@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -24,7 +23,4 @@ public class AnnouncementRequest {
     @NotNull
     @DecimalMin(value = "1")
     private BigDecimal saleValue;
-
-    //TODO: Retirar este campo, existe um CRUD correto para ele
-    private List<AnnouncementImageRequest> images;
 }
