@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.uai</groupId>
 	<artifactId>minas-market</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>minas-market</name>
 	<description>Backend MinasMarket</description>
 	<properties>
@@ -170,7 +170,7 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.10</minimum>
+											<minimum>0.80</minimum>
 										</limit>
 									</limits>
 								</rule>
