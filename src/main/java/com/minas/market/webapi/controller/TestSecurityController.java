@@ -52,8 +52,4 @@ public class TestSecurityController {
                 .getAuthentication().getAuthorities().stream().toList();
 
     }
-
-    private Boolean teste(String dados){
-        return dados == "teste";
-    }
 }
