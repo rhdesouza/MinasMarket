@@ -2,6 +2,7 @@ package com.minas.market.infrastructure.persistence.entity;
 
 import com.minas.market.infrastructure.config.auditable.Auditable;
 import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementCategory;
+import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -27,12 +28,15 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public class AnnouncementEntity extends Auditable<String> implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @NotNull
     @Column(name = "user_id")
     private UUID userId;
     @Enumerated(EnumType.STRING)
     private AnnouncementCategory category;
+    @Column(nullable = false)
+    private AnnouncementType type;
     @NotNull
     private String description;
     @Column(name = "sale_value")
@@ -43,11 +47,4 @@ public class AnnouncementEntity extends Auditable<String> implements Serializabl
     private List<AnnouncementImageEntity> images;
     private boolean isSold;
     private boolean isActive;
-
-
-    @PrePersist
-    void prePersist() {
-        if (this.id == null) this.id = UUID.randomUUID();
-    }
-
 }
