@@ -24,5 +24,7 @@ public class AnnouncementRequest {
     @NotNull
     @DecimalMin(value = "1")
     private BigDecimal saleValue;
+
+    //TODO: Retirar este campo, existe um CRUD correto para ele
     private List<AnnouncementImageRequest> images;
 }

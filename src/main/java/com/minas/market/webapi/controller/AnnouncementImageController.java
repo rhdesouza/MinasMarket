@@ -20,6 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 public class AnnouncementImageController implements AnnnouncementImageAPI {
+
+    //TODO: Ajustar o security para receber esta requisição
     @Autowired
     AnnouncementImageService announcementImageService;
 
