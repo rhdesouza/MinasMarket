@@ -6,6 +6,7 @@ import com.minas.market.infrastructure.mapper.AnnouncementImageMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementImageEntity;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementImageRepository;
 import com.minas.market.webapi.exception.BusinessRuleException;
+import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,20 +44,17 @@ public class AnnouncementImageServiceImp implements AnnouncementImageService {
             announcementImageEntity.setFileType(file.getContentType());
             announcementImageEntity.setSize(file.getSize());
             announcementImageEntity.setAnnouncementId(announcementId);
-
             announcementImageEntity.setData(file.getBytes());
             return announcementImageRepository.save(announcementImageEntity);
-
         } catch (MultipartException ex) {
             log.error(ex.getMessage());
             throw new MultipartException(ex.getMessage());
-
         }
     }
 
     @Override
     public AnnouncementImageEntity findById(UUID id) {
-        return announcementImageRepository.findById(id).orElseThrow(() -> new BusinessRuleException("Image announcement not found"));
+        return announcementImageRepository.findById(id).orElseThrow(() -> new NotFoundException("Image announcement not found"));
     }
 
     @Override
