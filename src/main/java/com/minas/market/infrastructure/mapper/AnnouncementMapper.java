@@ -17,7 +17,6 @@ public interface AnnouncementMapper {
     @Mapping(target = "isSold", ignore = true)
     @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "category", expression = "java(parseToAnnouncementCategory(announcementRequest.getCategory()))")
-    @Mapping(target = "images", ignore = true)
     AnnouncementEntity toEntity(AnnouncementRequest announcementRequest);
 
     default AnnouncementCategory parseToAnnouncementCategory(AnnouncementCategoryRequest announcementCategoryRequest){

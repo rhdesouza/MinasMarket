@@ -1,6 +1,7 @@
 package com.minas.market.infrastructure.config.auditable;
 
 import com.minas.market.infrastructure.persistence.entity.security.User;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +11,7 @@ import java.util.Optional;
 public class AuditorAwareImpl implements AuditorAware<String> {
 
     private static final String ADMIN = "ADMIN";
-    private static final String ANNO = "anonymousUser";
+    private static final String ANONYMOUS = "anonymousUser";
 
     @Override
     public Optional<String> getCurrentAuditor() {
@@ -19,8 +20,8 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
         if (authentication == null || !authentication.isAuthenticated()) {
             return Optional.of(ADMIN);
-        } else if (authentication.getPrincipal() == ANNO) {
-            return Optional.of(ANNO);
+        } else if (authentication.getPrincipal() == ANONYMOUS) {
+            return Optional.of(ANONYMOUS);
         } else {
             principal = (User) authentication.getPrincipal();
         }
