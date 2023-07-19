@@ -52,5 +52,4 @@ public class TestSecurityController {
                 .getAuthentication().getAuthorities().stream().toList();
 
     }
-
 }
