@@ -30,7 +30,7 @@ public interface AnnouncementAPI {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<UUID> create(
             @RequestBody @Valid AnnouncementRequest announcementRequest
     );

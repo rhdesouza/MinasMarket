@@ -18,6 +18,8 @@ public class AnnouncementRequest {
     private UUID userId;
     @NotNull
     private AnnouncementCategoryRequest category;
+    @NotNull
+    AnnouncementTypeRequest type;
     @NotEmpty
     private String description;
     @NotNull
