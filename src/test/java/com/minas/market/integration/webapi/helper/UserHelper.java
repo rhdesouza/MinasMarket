@@ -1,4 +1,4 @@
-package com.minas.market.integration.webapi;
+package com.minas.market.integration.webapi.helper;
 
 import com.minas.market.application.service.security.JwtService;
 import com.minas.market.infrastructure.persistence.entity.enums.TypeUser;
@@ -8,12 +8,14 @@ import com.minas.market.infrastructure.persistence.repository.security.TokenRepo
 import com.minas.market.infrastructure.persistence.repository.security.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class UserHelper {
+@Service
+public class UserHelper {
     @Autowired
     UserRepository userRepository;
     @Autowired
