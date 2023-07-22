@@ -122,6 +122,4 @@ class AnnouncementAPITest {
             throw new RuntimeException(e);
         }
     }
-
-
 }

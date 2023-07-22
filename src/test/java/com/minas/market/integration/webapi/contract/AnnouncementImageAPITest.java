@@ -36,12 +36,14 @@ class AnnouncementImageAPITest {
     AnnoucementHelper annoucementHelper;
     @Autowired
     private WebApplicationContext webApplicationContext;
-    private UUID userId;
     private UUID announcementId;
+
+    AnnouncementImageAPITest() {
+    }
 
     @BeforeEach
     public void init() {
-        userId = userHelper.createUser();
+        UUID userId = userHelper.createUser();
         announcementId = annoucementHelper.createAnnouncement(userId);
     }
 
