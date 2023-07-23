@@ -1,21 +1,25 @@
 package com.minas.market.integration.webapi.helper;
 
 import com.minas.market.application.service.security.JwtService;
+import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.enums.TypeUser;
 import com.minas.market.infrastructure.persistence.entity.security.*;
+import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.infrastructure.persistence.repository.security.RoleRepository;
 import com.minas.market.infrastructure.persistence.repository.security.TokenRepository;
 import com.minas.market.infrastructure.persistence.repository.security.UserRepository;
+import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-public class UserHelper {
+import static org.jeasy.random.FieldPredicates.named;
+
+public abstract class TestHelper {
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -24,6 +28,8 @@ public class UserHelper {
     JwtService jwtService;
     @Autowired
     TokenRepository tokenRepository;
+    @Autowired
+    AnnouncementRepository announcementRepository;
     PasswordEncoder passwordEncoder;
 
     private void inicializaRoles() {
@@ -82,5 +88,19 @@ public class UserHelper {
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+    public UUID createAnnouncement(UUID userId) {
+        AnnouncementEntity announcementEntity = new EasyRandom(
+                new EasyRandomParameters()
+                        .randomize(named("userId"), () -> userId)
+                        .excludeField(named("id"))
+                        .excludeField(named("createdBy"))
+                        .excludeField(named("createdDate"))
+                        .excludeField(named("lastModifiedBy"))
+                        .excludeField(named("lastModifiedDate"))
+                        .excludeField(named("images"))
+        ).nextObject(AnnouncementEntity.class);
+        return announcementRepository.save(announcementEntity).getId();
     }
 }

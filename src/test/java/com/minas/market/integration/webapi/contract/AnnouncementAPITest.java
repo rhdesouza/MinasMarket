@@ -1,7 +1,7 @@
 package com.minas.market.integration.webapi.contract;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minas.market.integration.webapi.helper.UserHelper;
+import com.minas.market.integration.webapi.helper.TestHelper;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
@@ -28,18 +28,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AnnouncementAPITest {
+class AnnouncementAPITest extends TestHelper{
     private static final URI PATH = URI.create("/api/v1/announcement");
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    UserHelper userHelper;
     private AnnouncementRequest announcementRequest;
     private UUID userId;
 
     @BeforeEach
     public void init() {
-        userId = userHelper.createUser();
+        userId = createUser();
         announcementRequest = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("userId"), () -> userId)

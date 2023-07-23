@@ -1,7 +1,6 @@
 package com.minas.market.integration.webapi.contract;
 
-import com.minas.market.integration.webapi.helper.AnnoucementHelper;
-import com.minas.market.integration.webapi.helper.UserHelper;
+import com.minas.market.integration.webapi.helper.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,14 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AnnouncementImageAPITest {
+class AnnouncementImageAPITest extends TestHelper {
     private static final URI PATH = URI.create("/api/v1/announcement-image");
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    UserHelper userHelper;
-    @Autowired
-    AnnoucementHelper annoucementHelper;
     @Autowired
     private WebApplicationContext webApplicationContext;
     private UUID announcementId;
@@ -43,8 +38,8 @@ class AnnouncementImageAPITest {
 
     @BeforeEach
     public void init() {
-        UUID userId = userHelper.createUser();
-        announcementId = annoucementHelper.createAnnouncement(userId);
+        UUID userId = createUser();
+        announcementId = createAnnouncement(userId);
     }
 
     @Test
