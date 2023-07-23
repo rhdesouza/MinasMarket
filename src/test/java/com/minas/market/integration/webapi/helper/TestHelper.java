@@ -30,6 +30,7 @@ public abstract class TestHelper {
     TokenRepository tokenRepository;
     @Autowired
     AnnouncementRepository announcementRepository;
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private void inicializaRoles() {
