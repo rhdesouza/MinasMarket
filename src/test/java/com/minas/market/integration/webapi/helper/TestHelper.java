@@ -10,6 +10,8 @@ import com.minas.market.infrastructure.persistence.repository.security.TokenRepo
 import com.minas.market.infrastructure.persistence.repository.security.UserRepository;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -111,6 +113,11 @@ public class TestHelper {
     }
 
     public void deleteAllAnnouncements(){
+        announcementRepository.deleteAll();
+    }
+
+    @AfterEach
+    public void afterHelper(){
         announcementRepository.deleteAll();
     }
 }
