@@ -62,6 +62,7 @@ public class TestHelper {
         System.out.println("createUser");
         Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
         if (userRepositoryByEmail.isPresent()) {
+            System.out.println("userRepositoryByEmail.get().getId(): " + userRepositoryByEmail.get().getId().toString());
             return userRepositoryByEmail.get().getId();
         }
 
@@ -85,6 +86,7 @@ public class TestHelper {
             System.out.println("createUser:::::" + user.getId().toString());
             return user.getId();
         }
+        System.out.println("users.get(0).getId(): " + users.get(0).getId().toString());
         return users.get(0).getId();
     }
 
