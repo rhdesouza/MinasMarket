@@ -109,4 +109,8 @@ public class TestHelper {
 
         return announcementRepository.save(announcementEntity).getId();
     }
+
+    public void deleteAllAnnouncements(){
+        announcementRepository.deleteAll();
+    }
 }
