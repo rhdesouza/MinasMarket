@@ -18,8 +18,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//@Component
-public class DataInitializr /*implements ApplicationListener<ContextRefreshedEvent>*/ {
+@Component
+public class DataInitializr implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = Logger.getLogger(DataInitializr.class.getName());
 
@@ -34,13 +34,12 @@ public class DataInitializr /*implements ApplicationListener<ContextRefreshedEve
     @Autowired
     PasswordEncoder passwordEncoder;
 
-/*
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent arg0) {
         this.inicializaRoles();
         this.initialUserAdmin();
     }
-*/
 
     /**
      * Inicializa as roles conforme arquivo de Constantes.
