@@ -62,11 +62,11 @@ public abstract class TestHelper {
         if (users.isEmpty()) {
             User user = User.builder()
                     .id(UUID.randomUUID())
-                    .firstname("Rafael")
-                    .lastname("Henrique")
+                    .firstname("Test")
+                    .lastname("Test")
                     .roles(List.of(roleRepository.getOneRoleByName(ConstRoles.ROLE_ADMIN_ADMIN), roleRepository.getOneRoleByName(ConstRoles.ROLE_PJ_GET)))
-                    .password(passwordEncoder.encode("SENHA"))
-                    .email("rhdesouza@hotmail.com")
+                    .password(passwordEncoder.encode("TEST"))
+                    .email("test@hotmail.com")
                     .type(TypeUser.PF)
                     .build();
 

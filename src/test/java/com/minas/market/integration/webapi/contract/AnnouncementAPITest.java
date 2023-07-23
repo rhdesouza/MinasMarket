@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AnnouncementAPITest extends TestHelper{
+class AnnouncementAPITest extends TestHelper {
     private static final URI PATH = URI.create("/api/v1/announcement");
     @Autowired
     private MockMvc mockMvc;
