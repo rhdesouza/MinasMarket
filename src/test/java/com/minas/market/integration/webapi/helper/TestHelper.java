@@ -62,7 +62,7 @@ public abstract class TestHelper {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             User user = User.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"))
                     .firstname("Test")
                     .lastname("Test")
                     .roles(List.of(roleRepository.getOneRoleByName(ConstRoles.ROLE_ADMIN_ADMIN), roleRepository.getOneRoleByName(ConstRoles.ROLE_PJ_GET)))
