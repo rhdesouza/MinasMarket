@@ -112,10 +112,6 @@ public class TestHelper {
         return announcementRepository.save(announcementEntity).getId();
     }
 
-    public void deleteAllAnnouncements(){
-        announcementRepository.deleteAll();
-    }
-
     @AfterEach
     public void afterHelper(){
         announcementRepository.deleteAll();
