@@ -59,11 +59,9 @@ public class TestHelper {
     }
 
     public UUID createUser() {
-        System.out.println("createUser");
         inicializaRoles();
         Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
         if (userRepositoryByEmail.isPresent()) {
-            System.out.println("userRepositoryByEmail.get().getId(): " + userRepositoryByEmail.get().getId().toString());
             return userRepositoryByEmail.get().getId();
         } else {
             User user = User.builder()
@@ -77,10 +75,9 @@ public class TestHelper {
                     .build();
 
             var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
+            jwtService.generateRefreshToken(user);
             userRepository.save(user);
             saveUserToken(user, jwtToken);
-            System.out.println("createUser:::::" + user.getId().toString());
             return user.getId();
         }
     }
@@ -100,6 +97,7 @@ public class TestHelper {
         AnnouncementEntity announcementEntity = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("userId"), () -> userId)
+                        .randomize(named("description"), ()-> "test")
                         .excludeField(named("id"))
                         .excludeField(named("createdBy"))
                         .excludeField(named("createdDate"))
@@ -107,6 +105,8 @@ public class TestHelper {
                         .excludeField(named("lastModifiedDate"))
                         .excludeField(named("images"))
         ).nextObject(AnnouncementEntity.class);
+        System.out.println("createAnnouncement");
+
         return announcementRepository.save(announcementEntity).getId();
     }
 }
