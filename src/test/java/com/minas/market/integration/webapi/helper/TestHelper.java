@@ -60,15 +60,12 @@ public class TestHelper {
 
     public UUID createUser() {
         System.out.println("createUser");
+        inicializaRoles();
         Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
         if (userRepositoryByEmail.isPresent()) {
             System.out.println("userRepositoryByEmail.get().getId(): " + userRepositoryByEmail.get().getId().toString());
             return userRepositoryByEmail.get().getId();
-        }
-
-        inicializaRoles();
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
+        } else {
             User user = User.builder()
                     .id(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"))
                     .firstname("Test")
@@ -86,8 +83,6 @@ public class TestHelper {
             System.out.println("createUser:::::" + user.getId().toString());
             return user.getId();
         }
-        System.out.println("users.get(0).getId(): " + users.get(0).getId().toString());
-        return users.get(0).getId();
     }
 
     private void saveUserToken(User user, String jwtToken) {
