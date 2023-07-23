@@ -23,8 +23,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/*@SpringBootTest
-@AutoConfigureMockMvc*/
+@SpringBootTest
+@AutoConfigureMockMvc
 class AnnouncementImageAPITest extends TestHelper {
     private static final URI PATH = URI.create("/api/v1/announcement-image");
     @Autowired
@@ -33,9 +33,6 @@ class AnnouncementImageAPITest extends TestHelper {
     private WebApplicationContext webApplicationContext;
     private UUID announcementId;
 
-    AnnouncementImageAPITest() {
-    }
-/*
     @BeforeEach
     public void init() {
         UUID userId = createUser();
@@ -97,6 +94,5 @@ class AnnouncementImageAPITest extends TestHelper {
                 )
                 .andExpect(status().isNotFound())
         ;
-
-    }*/
+    }
 }

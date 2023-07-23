@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.jeasy.random.FieldPredicates.named;
@@ -59,6 +60,11 @@ public class TestHelper {
 
     public UUID createUser() {
         System.out.println("createUser");
+        Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
+        if (userRepositoryByEmail.isPresent()) {
+            return userRepositoryByEmail.get().getId();
+        }
+
         inicializaRoles();
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
