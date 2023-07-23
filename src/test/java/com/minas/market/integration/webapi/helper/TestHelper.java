@@ -19,7 +19,7 @@ import java.util.UUID;
 
 import static org.jeasy.random.FieldPredicates.named;
 
-public abstract class TestHelper {
+public class TestHelper {
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -58,6 +58,7 @@ public abstract class TestHelper {
     }
 
     public UUID createUser() {
+        System.out.println("createUser");
         inicializaRoles();
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
