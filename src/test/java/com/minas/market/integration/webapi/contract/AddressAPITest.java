@@ -1,8 +1,7 @@
 package com.minas.market.integration.webapi.contract;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minas.market.integration.webapi.helper.TestHelper;
-import com.minas.market.webapi.dto.request.AnnouncementRequest;
+import com.minas.market.webapi.dto.request.AddressRequest;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.UUID;
 
@@ -25,66 +23,67 @@ import static org.jeasy.random.FieldPredicates.named;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
-class AnnouncementAPITest extends TestHelper {
-    private static final URI PATH = URI.create("/api/v1/announcement");
+class AddressAPITest extends TestHelper {
+
+    private static final URI PATH = URI.create("/api/v1/address");
     @Autowired
     private MockMvc mockMvc;
-    private AnnouncementRequest announcementRequest;
     private UUID userId;
+    private AddressRequest addressRequest;
 
     @BeforeEach
     public void init() {
         userId = createUser();
-        announcementRequest = new EasyRandom(
+        addressRequest = new EasyRandom(
                 new EasyRandomParameters()
-                        .randomize(named("userId"), () -> userId)
-                        .randomize(named("saleValue"), () -> BigDecimal.TEN)
-        ).nextObject(AnnouncementRequest.class);
+                        .randomize(named("number"), () -> 12)
+        ).nextObject(AddressRequest.class);
     }
 
     @Test
-    @DisplayName("Integration test for all methods in Announcement API")
+    @DisplayName("Integration test for all methods in Address API")
     void announcementAPI_CRUD() throws Exception {
-        String announcementId = postAnnouncement();
-        putAnnouncement(announcementId);
-        getAnnouncement(announcementId);
-        getAllAnnouncementByUserId();
-        deleteAnnouncement(announcementId);
+        String addressId = postAddress();
+        putAddress(addressId);
+        getAnnouncement(addressId);
+        getAllAddressByUserId();
+        deleteAddress(addressId);
     }
 
-    private String postAnnouncement() throws Exception {
+    private String postAddress() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post(PATH)
-                        .content(asJsonString(announcementRequest))
+                        .param("userId", userId.toString())
+                        .content(asJsonString(addressRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isCreated()).andReturn();
         return mvcResult.getResponse().getContentAsString().replaceAll("\"", "");
     }
 
-    private void putAnnouncement(String announcementId) throws Exception {
-        mockMvc.perform(put(PATH.getPath() + "/" + announcementId)
-                        .content(asJsonString(announcementRequest))
+    private void putAddress(String addressId) throws Exception {
+        mockMvc.perform(put(PATH.getPath() + "/" + addressId)
+                        .param("userId", userId.toString())
+                        .content(asJsonString(addressRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").value(announcementId));
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(addressId));
     }
 
-    private void getAnnouncement(String announcementId) throws Exception {
-        mockMvc.perform(get(PATH.getPath() + "/" + announcementId)
+    private void getAnnouncement(String addressId) throws Exception {
+        mockMvc.perform(get(PATH.getPath() + "/" + addressId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk())
                 .andExpect(
-                        MockMvcResultMatchers.jsonPath("$.id").value(announcementId)
+                        MockMvcResultMatchers.jsonPath("$.id").value(addressId)
                 )
         ;
     }
 
-    private void getAllAnnouncementByUserId() throws Exception {
+    private void getAllAddressByUserId() throws Exception {
         mockMvc.perform(get(PATH)
                         .param("userId", userId.toString())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -93,13 +92,13 @@ class AnnouncementAPITest extends TestHelper {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)));
     }
 
-    private void deleteAnnouncement(String announcementId) throws Exception {
-        mockMvc.perform(delete(PATH.getPath() + "/" + announcementId)
+    private void deleteAddress(String addressId) throws Exception {
+        mockMvc.perform(delete(PATH.getPath() + "/" + addressId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get(PATH.getPath() + "/" + announcementId)
+        mockMvc.perform(get(PATH.getPath() + "/" + addressId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk())

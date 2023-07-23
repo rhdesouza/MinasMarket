@@ -1,5 +1,6 @@
 package com.minas.market.integration.webapi.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minas.market.application.service.security.JwtService;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.enums.TypeUser;
@@ -107,9 +108,14 @@ public class TestHelper {
                         .excludeField(named("lastModifiedDate"))
                         .excludeField(named("images"))
         ).nextObject(AnnouncementEntity.class);
-        System.out.println("createAnnouncement");
-
         return announcementRepository.save(announcementEntity).getId();
+    }
+    protected static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
