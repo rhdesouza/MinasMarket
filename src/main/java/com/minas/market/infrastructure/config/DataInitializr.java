@@ -34,6 +34,7 @@ public class DataInitializr implements ApplicationListener<ContextRefreshedEvent
     @Autowired
     PasswordEncoder passwordEncoder;
 
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent arg0) {
         this.inicializaRoles();

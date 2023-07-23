@@ -1,19 +1,29 @@
-package com.minas.market.integration.webapi;
+package com.minas.market.integration.webapi.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minas.market.application.service.security.JwtService;
+import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.enums.TypeUser;
 import com.minas.market.infrastructure.persistence.entity.security.*;
+import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.infrastructure.persistence.repository.security.RoleRepository;
 import com.minas.market.infrastructure.persistence.repository.security.TokenRepository;
 import com.minas.market.infrastructure.persistence.repository.security.UserRepository;
+import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public abstract class UserHelper {
+import static org.jeasy.random.FieldPredicates.named;
+
+public class TestHelper {
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -22,6 +32,9 @@ public abstract class UserHelper {
     JwtService jwtService;
     @Autowired
     TokenRepository tokenRepository;
+    @Autowired
+    AnnouncementRepository announcementRepository;
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private void inicializaRoles() {
@@ -50,25 +63,26 @@ public abstract class UserHelper {
 
     public UUID createUser() {
         inicializaRoles();
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
+        Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
+        if (userRepositoryByEmail.isPresent()) {
+            return userRepositoryByEmail.get().getId();
+        } else {
             User user = User.builder()
-                    .id(UUID.randomUUID())
-                    .firstname("Rafael")
-                    .lastname("Henrique")
+                    .id(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"))
+                    .firstname("Test")
+                    .lastname("Test")
                     .roles(List.of(roleRepository.getOneRoleByName(ConstRoles.ROLE_ADMIN_ADMIN), roleRepository.getOneRoleByName(ConstRoles.ROLE_PJ_GET)))
-                    .password(passwordEncoder.encode("SENHA"))
-                    .email("rhdesouza@hotmail.com")
+                    .password(passwordEncoder.encode("TEST"))
+                    .email("test@hotmail.com")
                     .type(TypeUser.PF)
                     .build();
 
             var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
+            jwtService.generateRefreshToken(user);
             userRepository.save(user);
             saveUserToken(user, jwtToken);
             return user.getId();
         }
-        return users.get(0).getId();
     }
 
     private void saveUserToken(User user, String jwtToken) {
@@ -80,5 +94,32 @@ public abstract class UserHelper {
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+    public UUID createAnnouncement(UUID userId) {
+        AnnouncementEntity announcementEntity = new EasyRandom(
+                new EasyRandomParameters()
+                        .randomize(named("userId"), () -> userId)
+                        .randomize(named("description"), ()-> "test")
+                        .excludeField(named("id"))
+                        .excludeField(named("createdBy"))
+                        .excludeField(named("createdDate"))
+                        .excludeField(named("lastModifiedBy"))
+                        .excludeField(named("lastModifiedDate"))
+                        .excludeField(named("images"))
+        ).nextObject(AnnouncementEntity.class);
+        return announcementRepository.save(announcementEntity).getId();
+    }
+    protected static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AfterEach
+    public void afterHelper(){
+        announcementRepository.deleteAll();
     }
 }
