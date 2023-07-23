@@ -76,6 +76,7 @@ public class TestHelper {
             var refreshToken = jwtService.generateRefreshToken(user);
             userRepository.save(user);
             saveUserToken(user, jwtToken);
+            System.out.println("createUser:::::" + user.getId().toString());
             return user.getId();
         }
         return users.get(0).getId();
