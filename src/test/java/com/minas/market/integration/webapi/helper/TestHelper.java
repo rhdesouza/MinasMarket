@@ -12,7 +12,6 @@ import com.minas.market.infrastructure.persistence.repository.security.UserRepos
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -100,16 +99,18 @@ public class TestHelper {
         AnnouncementEntity announcementEntity = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("userId"), () -> userId)
-                        .randomize(named("description"), ()-> "test")
+                        .randomize(named("description"), () -> "test")
                         .excludeField(named("id"))
                         .excludeField(named("createdBy"))
                         .excludeField(named("createdDate"))
                         .excludeField(named("lastModifiedBy"))
                         .excludeField(named("lastModifiedDate"))
                         .excludeField(named("images"))
+                        .excludeField(named("messages"))
         ).nextObject(AnnouncementEntity.class);
         return announcementRepository.save(announcementEntity).getId();
     }
+
     protected static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -119,7 +120,7 @@ public class TestHelper {
     }
 
     @AfterEach
-    public void afterHelper(){
+    public void afterHelper() {
         announcementRepository.deleteAll();
     }
 }
