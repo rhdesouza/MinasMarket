@@ -4,6 +4,7 @@ import com.minas.market.webapi.dto.Announcement;
 import com.minas.market.webapi.dto.Message;
 import com.minas.market.webapi.dto.request.MessageRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/message")
@@ -58,7 +60,7 @@ public interface MessageAPI {
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Message> getOne(@PathVariable("id") UUID messageId);
+    ResponseEntity<Message> getOne(@PathVariable("id") UUID id);
 
     @Operation(summary = "Delete message", description = "Delete message")
     @ApiResponses(value = {
@@ -68,5 +70,35 @@ public interface MessageAPI {
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
     @DeleteMapping("/{id}")
-    void delete(@PathVariable("id") UUID messageId);
+    void delete(@PathVariable("id") UUID id);
+
+    @Operation(summary = "Get all messages by user", description = "Get all messages by user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Messages localized",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = Message.class), minItems = 2)
+                    )),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
+    })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<Message>> getAllMessagesByUserOrAnnouncements(
+            @RequestParam("userId") UUID userId,
+            @RequestParam("announcementId") UUID announcementId
+    );
+
+    @Operation(summary = "Read Message", description = "Read message")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Message read",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UUID.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
+    })
+    @PostMapping(name = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    void readMessage(@PathVariable("id") UUID id);
+
 }
