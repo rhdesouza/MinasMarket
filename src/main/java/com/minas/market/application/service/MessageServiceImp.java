@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,16 +67,17 @@ public class MessageServiceImp implements MessageService {
 
     @Override
     public List<MessageEntity> getAllMessagesByUserOrAnnouncements(UUID userId, UUID announcementId) {
-        if (userId != null && announcementId == null) {
-            return messageRepository.findAllByUserId(userId);
-        }
-        if (userId == null && announcementId != null) {
-            return messageRepository.findAllByAnnouncementId(announcementId);
-        }
-        if (userId != null && announcementId != null) {
-            return messageRepository.findAllByUserIdAndAnnouncementId(userId, announcementId);
-        }
-        return List.of();
+        String selectQuery = compareNull(userId).concat(compareNull(announcementId));
+        return switch (selectQuery) {
+            case "10" -> messageRepository.findAllByUserId(userId);
+            case "01" -> messageRepository.findAllByAnnouncementId(announcementId);
+            case "11" -> messageRepository.findAllByUserIdAndAnnouncementId(userId, announcementId);
+            default -> List.of();
+        };
+    }
+
+    private String compareNull(UUID uuid) {
+        return uuid == null ? "0" : "1";
     }
 
     @Override
