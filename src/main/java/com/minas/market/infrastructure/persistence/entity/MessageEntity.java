@@ -37,4 +37,7 @@ public class MessageEntity extends Auditable<String> implements Serializable {
     @Column(name = "read")
     private Boolean read;
 
+    @Column(name = "deleted")
+    private Boolean deleted;
+
 }

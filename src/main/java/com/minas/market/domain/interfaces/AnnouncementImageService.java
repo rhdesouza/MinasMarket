@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AnnouncementImageService {
 
-    AnnouncementImageEntity create(UUID announcementId, MultipartFile file) throws Exception;
+    AnnouncementImageEntity create(UUID announcementId, MultipartFile file);
 
     AnnouncementImageEntity findById(UUID id);
 

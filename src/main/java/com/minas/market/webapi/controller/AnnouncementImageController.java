@@ -31,7 +31,7 @@ public class AnnouncementImageController implements AnnnouncementImageAPI {
     public ResponseEntity<UUID> create(
             @NotNull UUID announcementId,
             @NotNull MultipartFile file
-    ) throws Exception {
+    ) {
         UUID announcementImageId = announcementImageService.create(announcementId, file).getId();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(announcementImageId)

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/message")
-@Tag(name = "Messages")
+@Tag(name = "Message")
 public interface MessageAPI {
     @Operation(summary = "Create Message", description = "Create message")
     @ApiResponses(value = {
@@ -72,7 +72,7 @@ public interface MessageAPI {
     @DeleteMapping("/{id}")
     void delete(@PathVariable("id") UUID id);
 
-    @Operation(summary = "Get all messages by user", description = "Get all messages by user")
+    @Operation(summary = "Get all messages by user or announcement", description = "Get all messages by user or announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Messages localized",
                     content = @Content(mediaType = "application/json",
@@ -85,8 +85,8 @@ public interface MessageAPI {
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<Message>> getAllMessagesByUserOrAnnouncements(
-            @RequestParam("userId") UUID userId,
-            @RequestParam("announcementId") UUID announcementId
+            @RequestParam(name = "userId", required = false) UUID userId,
+            @RequestParam(name = "announcementId", required = false) UUID announcementId
     );
 
     @Operation(summary = "Read Message", description = "Read message")
@@ -98,7 +98,7 @@ public interface MessageAPI {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
-    @PostMapping(name = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/read/{id}")
     void readMessage(@PathVariable("id") UUID id);
 
 }

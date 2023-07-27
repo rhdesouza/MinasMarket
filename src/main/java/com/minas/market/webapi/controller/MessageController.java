@@ -6,14 +6,18 @@ import com.minas.market.infrastructure.persistence.entity.MessageEntity;
 import com.minas.market.webapi.contract.MessageAPI;
 import com.minas.market.webapi.dto.Message;
 import com.minas.market.webapi.dto.request.MessageRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
+@RestController
 public class MessageController implements MessageAPI {
 
     @Autowired

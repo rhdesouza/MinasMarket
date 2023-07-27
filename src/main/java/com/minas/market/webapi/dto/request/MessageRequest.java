@@ -20,6 +20,5 @@ public class MessageRequest {
     @NotNull
     @NotEmpty
     private String message;
-    private Boolean read;
 
 }
