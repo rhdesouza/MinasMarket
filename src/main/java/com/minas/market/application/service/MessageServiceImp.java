@@ -7,7 +7,6 @@ import com.minas.market.infrastructure.mapper.MessageMapper;
 import com.minas.market.infrastructure.persistence.entity.MessageEntity;
 import com.minas.market.infrastructure.persistence.repository.MessageRepository;
 import com.minas.market.webapi.dto.request.MessageRequest;
-import com.minas.market.webapi.exception.BusinessRuleException;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class MessageServiceImp implements MessageService {
 
     private void validateUserAndAnnouncements(MessageRequest messageRequest) {
         if (userServiceImp.findUserById(messageRequest.getUserId()).isEmpty()) {
-            throw new BusinessRuleException("User not found");
+            throw new NotFoundException("User not found");
         }
         announcementService.findById(messageRequest.getAnnouncementId());
     }
