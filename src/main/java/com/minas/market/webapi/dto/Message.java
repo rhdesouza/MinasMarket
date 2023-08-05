@@ -15,4 +15,5 @@ public class Message {
     private UUID announcementId;
     private String message;
     private Boolean read;
+    private Boolean deleted;
 }

@@ -9,6 +9,8 @@ import org.mapstruct.Mapper;
 public interface MessageMapper {
 
     MessageEntity toEntity(Message dto);
+
     MessageEntity toEntity(MessageRequest messageRequest);
+
     Message toDTO(MessageEntity messageEntity);
 }

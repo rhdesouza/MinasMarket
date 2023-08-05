@@ -60,14 +60,14 @@ public class TestHelper {
         }
     }
 
-    public UUID createUser() {
+    public UUID createUser(UUID userId) {
         inicializaRoles();
         Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
         if (userRepositoryByEmail.isPresent()) {
             return userRepositoryByEmail.get().getId();
         } else {
             User user = User.builder()
-                    .id(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"))
+                    .id(userId)
                     .firstname("Test")
                     .lastname("Test")
                     .roles(List.of(roleRepository.getOneRoleByName(ConstRoles.ROLE_ADMIN_ADMIN), roleRepository.getOneRoleByName(ConstRoles.ROLE_PJ_GET)))

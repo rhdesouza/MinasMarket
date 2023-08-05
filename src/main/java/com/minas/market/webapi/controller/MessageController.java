@@ -28,12 +28,12 @@ public class MessageController implements MessageAPI {
 
     @Override
     public ResponseEntity<UUID> create(MessageRequest messageRequest) {
-        UUID announcementId = messageService.create(messageRequest).getId();
+        UUID messageId = messageService.create(messageRequest).getId();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(announcementId)
+                .buildAndExpand(messageId)
                 .toUri();
 
-        return ResponseEntity.created(uri).body(announcementId);
+        return ResponseEntity.created(uri).body(messageId);
     }
 
     @Override
