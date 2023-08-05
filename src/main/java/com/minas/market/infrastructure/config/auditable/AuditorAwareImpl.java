@@ -1,7 +1,6 @@
 package com.minas.market.infrastructure.config.auditable;
 
 import com.minas.market.infrastructure.persistence.entity.security.User;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

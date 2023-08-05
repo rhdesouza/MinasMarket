@@ -5,7 +5,6 @@ import com.minas.market.domain.interfaces.AnnouncementService;
 import com.minas.market.infrastructure.mapper.AnnouncementImageMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementImageEntity;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementImageRepository;
-import com.minas.market.webapi.exception.BusinessRuleException;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class AnnouncementImageServiceImp implements AnnouncementImageService {
 
     @Override
     @Transactional
-    public AnnouncementImageEntity create(UUID announcementId, MultipartFile file) throws Exception {
+    public AnnouncementImageEntity create(UUID announcementId, MultipartFile file) {
         announcementService.findById(announcementId);
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         if (fileName.contains("..")) {
@@ -49,6 +49,8 @@ public class AnnouncementImageServiceImp implements AnnouncementImageService {
         } catch (MultipartException ex) {
             log.error(ex.getMessage());
             throw new MultipartException(ex.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

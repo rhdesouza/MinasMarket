@@ -34,7 +34,7 @@ public interface AnnnouncementImageAPI {
     ResponseEntity<UUID> create(
             @NotNull @RequestHeader(name = "announcement-id") UUID announcementId,
             @NotNull @RequestParam("file") MultipartFile file
-    ) throws Exception;
+    );
 
     @Operation(summary = "Get announcement image", description = "Get announcement image")
     @ApiResponses(value = {

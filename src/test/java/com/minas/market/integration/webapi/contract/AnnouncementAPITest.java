@@ -1,6 +1,5 @@
 package com.minas.market.integration.webapi.contract;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minas.market.integration.webapi.helper.TestHelper;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import org.jeasy.random.EasyRandom;
@@ -37,7 +36,7 @@ class AnnouncementAPITest extends TestHelper {
 
     @BeforeEach
     public void init() {
-        userId = createUser();
+        userId = createUser(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"));
         announcementRequest = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("userId"), () -> userId)

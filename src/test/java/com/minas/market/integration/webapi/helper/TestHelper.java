@@ -12,7 +12,6 @@ import com.minas.market.infrastructure.persistence.repository.security.UserRepos
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -61,14 +60,14 @@ public class TestHelper {
         }
     }
 
-    public UUID createUser() {
+    public UUID createUser(UUID userId) {
         inicializaRoles();
         Optional<User> userRepositoryByEmail = userRepository.findByEmail("test@hotmail.com");
         if (userRepositoryByEmail.isPresent()) {
             return userRepositoryByEmail.get().getId();
         } else {
             User user = User.builder()
-                    .id(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"))
+                    .id(userId)
                     .firstname("Test")
                     .lastname("Test")
                     .roles(List.of(roleRepository.getOneRoleByName(ConstRoles.ROLE_ADMIN_ADMIN), roleRepository.getOneRoleByName(ConstRoles.ROLE_PJ_GET)))
@@ -100,16 +99,18 @@ public class TestHelper {
         AnnouncementEntity announcementEntity = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("userId"), () -> userId)
-                        .randomize(named("description"), ()-> "test")
+                        .randomize(named("description"), () -> "test")
                         .excludeField(named("id"))
                         .excludeField(named("createdBy"))
                         .excludeField(named("createdDate"))
                         .excludeField(named("lastModifiedBy"))
                         .excludeField(named("lastModifiedDate"))
                         .excludeField(named("images"))
+                        .excludeField(named("messages"))
         ).nextObject(AnnouncementEntity.class);
         return announcementRepository.save(announcementEntity).getId();
     }
+
     protected static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -119,7 +120,7 @@ public class TestHelper {
     }
 
     @AfterEach
-    public void afterHelper(){
+    public void afterHelper() {
         announcementRepository.deleteAll();
     }
 }

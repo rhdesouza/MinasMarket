@@ -1,6 +1,7 @@
 package com.minas.market.infrastructure.persistence.entity.security;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.minas.market.infrastructure.persistence.entity.MessageEntity;
 import com.minas.market.infrastructure.persistence.entity.enums.TypeUser;
 import com.minas.market.infrastructure.persistence.entity.AddressEntity;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Data
 @Builder
@@ -55,6 +59,11 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true)
     private List<AnnouncementEntity> announcement;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    @Audited(targetAuditMode = NOT_AUDITED)
+    private List<MessageEntity> messages;
 
     private boolean isActive;
 

@@ -35,7 +35,7 @@ class AnnouncementImageAPITest extends TestHelper {
 
     @BeforeEach
     public void init() {
-        UUID userId = createUser();
+        UUID userId = createUser(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"));
         announcementId = createAnnouncement(userId);
     }
 

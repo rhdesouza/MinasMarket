@@ -5,19 +5,20 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnouncementImageRequest {
+public class MessageRequest {
+
+    @NotNull
+    private UUID userId;
     @NotNull
     private UUID announcementId;
-    @NotEmpty
-    private String title;
     @NotNull
-    private MultipartFile image;
+    @NotEmpty
+    private String message;
 
 }

@@ -30,21 +30,35 @@ public class AnnouncementEntity extends Auditable<String> implements Serializabl
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @NotNull
     @Column(name = "user_id")
     private UUID userId;
+
     @Enumerated(EnumType.STRING)
     private AnnouncementCategory category;
+
     @Column(nullable = false)
     private AnnouncementType type;
+
     @NotNull
     private String description;
+
     @Column(name = "sale_value")
     private BigDecimal saleValue;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "announcement_id", unique = true)
     @Audited(targetAuditMode = NOT_AUDITED)
     private List<AnnouncementImageEntity> images;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "announcement_id")
+    @Audited(targetAuditMode = NOT_AUDITED)
+    private List<MessageEntity> messages;
+
     private boolean isSold;
+
     private boolean isActive;
+
 }
