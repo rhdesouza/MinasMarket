@@ -7,6 +7,7 @@ import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.security.User;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
+import com.minas.market.webapi.exception.BusinessRuleException;
 import com.minas.market.webapi.exception.NotFoundException;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Assertions;
@@ -60,6 +61,17 @@ class AnnouncementServiceImpTest {
     }
 
     @Test
+    @DisplayName("Should throw an exception when the user is not found")
+    void create_userNotFound() {
+        Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.empty());
+
+        BusinessRuleException exception = Assertions.assertThrows(BusinessRuleException.class,
+                () -> announcementServiceImp.create(announcementRequest));
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
     @DisplayName("Should updated announcement when data is correct")
     void update_onSuccess() {
         AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest);
@@ -68,6 +80,17 @@ class AnnouncementServiceImpTest {
         Mockito.when(announcementRepository.save(any())).thenReturn(expected);
         AnnouncementEntity created = announcementServiceImp.update(announcementId, announcementRequest);
         assertEquals(expected, created);
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when the user is not found")
+    void update_userNotFound() {
+        Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.empty());
+
+        BusinessRuleException exception = Assertions.assertThrows(BusinessRuleException.class,
+                () -> announcementServiceImp.update(announcementId, announcementRequest));
+
+        assertEquals("User not found", exception.getMessage());
     }
 
     @Test

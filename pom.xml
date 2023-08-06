@@ -148,6 +148,12 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.8</version>
+				<configuration>
+					<excludes>
+						<exclude>com/minas/market/webapi/exception/*</exclude>
+						<exclude>com/minas/market/infrastructure/config/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>

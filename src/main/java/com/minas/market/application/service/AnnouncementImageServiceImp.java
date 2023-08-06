@@ -46,11 +46,9 @@ public class AnnouncementImageServiceImp implements AnnouncementImageService {
             announcementImageEntity.setAnnouncementId(announcementId);
             announcementImageEntity.setData(file.getBytes());
             return announcementImageRepository.save(announcementImageEntity);
-        } catch (MultipartException ex) {
+        } catch (MultipartException | IOException ex) {
             log.error(ex.getMessage());
             throw new MultipartException(ex.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
