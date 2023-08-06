@@ -71,6 +71,18 @@ class AddressServiceImpTest {
     }
 
     @Test
+    @DisplayName("Should return exception when user not found")
+    void update_userNotFound() {
+        AddressEntity expected = addressMapper.toEntity(addressRequest, userId);
+        Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.empty());
+
+        NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
+                () -> addressServiceImp.update(userId, addressId, addressRequest));
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
     @DisplayName("Should find address when exists")
     void findById_onSuccess() {
         AddressEntity expected = addressMapper.toEntity(addressRequest, userId);

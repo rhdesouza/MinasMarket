@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -77,6 +78,30 @@ class AnnouncementImageServiceImpTest {
         assertEquals(fileMock.getSize(), announcementImageEntity.getSize());
         assertEquals(announcementId, announcementImageEntity.getAnnouncementId());
         assertEquals(fileMock.getBytes(), announcementImageEntity.getData());
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when the filename is invalid")
+    void create_MultipartExceptionFileName() {
+        MockMultipartFile fileMockException = new MockMultipartFile("test..jpg", "test...jpg", "jpg", HexFormat.ofDelimiter(":")
+                .parseHex("e0:4f:d0:20:ea:3a:69:10:a2:d8:08:00:2b:30:30:9d"));
+
+        MultipartException exception = Assertions.assertThrows(MultipartException.class,
+                () -> announcementImageService.create(announcementId, fileMockException));
+
+        assertEquals("Sorry! Filename contains invalid path sequence " + fileMockException.getOriginalFilename(), exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should return an exception when an exception of type MultipartException occurs")
+    void create_MultipartExceptionFileSave() {
+        Mockito.when(announcementService.findById(any(UUID.class))).thenReturn(new EasyRandom().nextObject(AnnouncementEntity.class));
+        Mockito.when(announcementImageRepository.save(any(AnnouncementImageEntity.class))).thenThrow(new MultipartException("ERROR MultipartException"));
+
+        MultipartException exception = Assertions.assertThrows(MultipartException.class,
+                () -> announcementImageService.create(announcementId, fileMock));
+
+        assertEquals("ERROR MultipartException", exception.getMessage());
     }
 
     @Test
