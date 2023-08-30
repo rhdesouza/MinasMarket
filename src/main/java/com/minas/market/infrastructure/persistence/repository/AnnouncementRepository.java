@@ -15,7 +15,7 @@ public interface AnnouncementRepository extends JpaRepository<AnnouncementEntity
     List<AnnouncementEntity> findAllByUserId(UUID userId);
 
     @NotNull
-        //@Query("FROM AnnouncementEntity ae LEFT JOIN ae.messages me WHERE ae.id = :announcementId and me.deleted = false")
+    @Query("FROM AnnouncementEntity ae JOIN FETCH ae.messages me WHERE ae.id = :announcementId and me.deleted = false")
     Optional<AnnouncementEntity> findById(@Param(value = "announcementId") @NotNull UUID userId);
 
 }
