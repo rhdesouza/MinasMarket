@@ -1,11 +1,12 @@
 package com.minas.market.webapi.controller;
 
+import com.minas.market.domain.interfaces.AnnouncementService;
+import com.minas.market.infrastructure.mapper.AnnouncementMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.webapi.contract.AnnouncementAPI;
 import com.minas.market.webapi.dto.Announcement;
+import com.minas.market.webapi.dto.AnnouncementMessage;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
-import com.minas.market.domain.interfaces.AnnouncementService;
-import com.minas.market.infrastructure.mapper.AnnouncementMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +43,9 @@ public class AnnouncementController implements AnnouncementAPI {
     }
 
     @Override
-    public ResponseEntity<Announcement> getOne(UUID announcementId) {
-        Announcement announcement = announcementMapper.toDTO(announcementService.findById(announcementId));
-        return ResponseEntity.ok(announcement);
+    public ResponseEntity<AnnouncementMessage> getOne(UUID announcementId) {
+        AnnouncementMessage announcementMessage = announcementMapper.toDTOWithMessage(announcementService.findById(announcementId));
+        return ResponseEntity.ok(announcementMessage);
     }
 
     @Override

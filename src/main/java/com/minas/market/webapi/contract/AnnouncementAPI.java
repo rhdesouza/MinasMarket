@@ -1,6 +1,7 @@
 package com.minas.market.webapi.contract;
 
 import com.minas.market.webapi.dto.Announcement;
+import com.minas.market.webapi.dto.AnnouncementMessage;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -60,7 +61,7 @@ public interface AnnouncementAPI {
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Announcement> getOne(@PathVariable("id") UUID announcementId);
+    ResponseEntity<AnnouncementMessage> getOne(@PathVariable("id") UUID announcementId);
 
     @Operation(summary = "Get all announcements by user", description = "Get all announcements by user")
     @ApiResponses(value = {

@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestSecurityController {
 
-    //TODO: Apagar essa classe após os testes de security
+    // TODO: Apagar essa classe após os testes de security
 
     @Autowired
     private UserRepository userRepository;

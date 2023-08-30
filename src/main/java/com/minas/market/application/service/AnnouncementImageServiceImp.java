@@ -35,9 +35,7 @@ public class AnnouncementImageServiceImp implements AnnouncementImageService {
     public AnnouncementImageEntity create(UUID announcementId, MultipartFile file) {
         announcementService.findById(announcementId);
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        if (fileName.contains("..")) {
-            throw new MultipartException("Sorry! Filename contains invalid path sequence " + fileName);
-        }
+        validateMultipartException(fileName);
         try {
             AnnouncementImageEntity announcementImageEntity = new AnnouncementImageEntity();
             announcementImageEntity.setFileName(fileName);
@@ -49,6 +47,12 @@ public class AnnouncementImageServiceImp implements AnnouncementImageService {
         } catch (MultipartException | IOException ex) {
             log.error(ex.getMessage());
             throw new MultipartException(ex.getMessage());
+        }
+    }
+
+    private void validateMultipartException(String fileName) {
+        if (fileName.contains("..")) {
+            throw new MultipartException("Sorry! Filename contains invalid path sequence " + fileName);
         }
     }
 

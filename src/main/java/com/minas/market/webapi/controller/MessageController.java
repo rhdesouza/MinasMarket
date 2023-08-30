@@ -44,6 +44,7 @@ public class MessageController implements MessageAPI {
     @Override
     public ResponseEntity<Message> getOne(UUID id) {
         Message message = messageMapper.toDTO(messageService.findById(id));
+        readMessage(id);
         return ResponseEntity.ok(message);
     }
 
