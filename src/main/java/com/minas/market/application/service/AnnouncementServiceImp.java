@@ -43,16 +43,19 @@ public class AnnouncementServiceImp implements AnnouncementService {
         if (userServiceImp.findUserById(announcementRequest.getUserId()).isEmpty()) {
             throw new BusinessRuleException("User not found");
         }
-        AnnouncementEntity announcement = findById(announcementId);
-        announcement.setCategory(AnnouncementCategory.getEnum(announcementRequest.getCategory().name()));
-        announcement.setDescription(announcementRequest.getDescription());
-        announcement.setSaleValue(announcementRequest.getSaleValue());
-        return announcementRepository.save(announcement);
+        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest);
+        entity.setId(announcementId);
+        entity.setCategory(AnnouncementCategory.getEnum(announcementRequest.getCategory().name()));
+        entity.setDescription(announcementRequest.getDescription());
+        entity.setSaleValue(announcementRequest.getSaleValue());
+        return announcementRepository.save(entity);
     }
 
+    // TODO: Verificar o motivo de não respeitar a query nativa, refatorar o método abaixo
     @Override
     public AnnouncementEntity findById(UUID announcementId) {
-        return announcementRepository.findById(announcementId).orElseThrow(() -> new NotFoundException("Announcement not found"));
+        return announcementRepository.findById(announcementId)
+                .orElseThrow(() -> new NotFoundException("Announcement not found"));
     }
 
     @Override

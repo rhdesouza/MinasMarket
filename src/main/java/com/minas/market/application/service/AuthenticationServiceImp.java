@@ -63,7 +63,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
         saveUserToken(savedUser, jwtToken);
         return authenticationMapper.toAuthenticationResponse(jwtToken, refreshToken);
 
-        //TODO: Incluir a service para salvar o endereço no banco.
+        // TODO: Incluir a service para salvar o endereço no banco.
     }
 
     @Override

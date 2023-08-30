@@ -2,6 +2,7 @@ package com.minas.market.infrastructure.mapper;
 
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.webapi.dto.Announcement;
+import com.minas.market.webapi.dto.AnnouncementMessage;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementCategory;
 import com.minas.market.webapi.dto.request.AnnouncementCategoryRequest;
@@ -12,6 +13,8 @@ import org.mapstruct.Mapping;
 public interface AnnouncementMapper {
 
     Announcement toDTO(AnnouncementEntity announcementEntity);
+
+    AnnouncementMessage toDTOWithMessage(AnnouncementEntity announcementEntity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isSold", ignore = true)

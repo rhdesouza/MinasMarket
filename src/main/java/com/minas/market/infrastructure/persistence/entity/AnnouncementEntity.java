@@ -52,7 +52,7 @@ public class AnnouncementEntity extends Auditable<String> implements Serializabl
     @Audited(targetAuditMode = NOT_AUDITED)
     private List<AnnouncementImageEntity> images;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "announcement_id")
     @Audited(targetAuditMode = NOT_AUDITED)
     private List<MessageEntity> messages;
