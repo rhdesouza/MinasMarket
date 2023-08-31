@@ -2,6 +2,7 @@ package com.minas.market.application.service;
 
 import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.domain.interfaces.AnnouncementService;
+import com.minas.market.domain.interfaces.MessageService;
 import com.minas.market.infrastructure.mapper.AnnouncementMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementCategory;
@@ -11,6 +12,7 @@ import com.minas.market.webapi.exception.BusinessRuleException;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,9 @@ public class AnnouncementServiceImp implements AnnouncementService {
     UserServiceImp userServiceImp;
     @Autowired
     AnnouncementMapper announcementMapper;
+    @Autowired
+    @Lazy
+    MessageService messageService;
 
     @Override
     @Transactional
@@ -51,11 +56,12 @@ public class AnnouncementServiceImp implements AnnouncementService {
         return announcementRepository.save(entity);
     }
 
-    // TODO: Verificar o motivo de não respeitar a query nativa, refatorar o método abaixo
     @Override
     public AnnouncementEntity findById(UUID announcementId) {
-        return announcementRepository.findById(announcementId)
+        AnnouncementEntity announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new NotFoundException("Announcement not found"));
+        announcement.setMessages(messageService.getAllMessagesByUserOrAnnouncements(null, announcementId));
+        return announcement;
     }
 
     @Override

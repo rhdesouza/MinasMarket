@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -33,6 +34,7 @@ class MessageAPITest extends TestHelper {
     private UUID userId;
     private UUID announcementId;
     private MessageRequest messageRequest;
+    private MessageRequest messageRequest2;
 
     @BeforeEach
     private void init() {
@@ -43,20 +45,26 @@ class MessageAPITest extends TestHelper {
                         .randomize(named("userId"), () -> userId)
                         .randomize(named("announcementId"), () -> announcementId)
         ).nextObject(MessageRequest.class);
+
+        messageRequest2 = new EasyRandom(
+                new EasyRandomParameters()
+                        .randomize(named("userId"), () -> userId)
+                        .randomize(named("announcementId"), () -> announcementId)
+        ).nextObject(MessageRequest.class);
     }
 
     @Test
     @DisplayName("Integration test for all methods in Message API")
     void messageAPI_CRUD() throws Exception {
-        String messageId = postMessage();
-        putMessage(messageId);
-        getMessage(messageId);
-        deleteMessage(messageId);
+        List<String> messages = postMessage();
+        putMessage(messages.get(0));
+        getMessage(messages.get(0));
+        deleteMessage(messages.get(0));
         getAllMessagesByUserOrAnnouncements();
-        readMessage(messageId);
+        readMessage(messages.get(1));
     }
 
-    private String postMessage() throws Exception {
+    private List<String> postMessage() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post(PATH)
                         .content(asJsonString(messageRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +72,17 @@ class MessageAPITest extends TestHelper {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        return mvcResult.getResponse().getContentAsString().replaceAll("\"", "");
+        MvcResult mvcResult2 = mockMvc.perform(post(PATH)
+                        .content(asJsonString(messageRequest2))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        return List.of(
+                mvcResult.getResponse().getContentAsString().replaceAll("\"", ""),
+                mvcResult2.getResponse().getContentAsString().replaceAll("\"", "")
+        );
     }
 
     private void putMessage(String messageId) throws Exception {
