@@ -59,13 +59,14 @@ public class AnnouncementServiceImp implements AnnouncementService {
     }
 
     @Override
-    public List<AnnouncementEntity> findAllByUserId(UUID userId) {
-        return announcementRepository.findAllByUserId(userId);
+    public List<AnnouncementEntity> findAllByUserId() {
+        return announcementRepository.findAllByUserId(authenticatedUser.me().getId());
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
+        validateAnnouncementFromUser(id);
         AnnouncementEntity announcement = findById(id);
         announcement.setActive(false);
         announcementRepository.save(announcement);

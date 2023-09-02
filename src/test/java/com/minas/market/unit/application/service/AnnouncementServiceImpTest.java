@@ -107,12 +107,13 @@ class AnnouncementServiceImpTest {
     @Test
     @DisplayName("Should find all announcements by user id")
     void findAllByUserId() {
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
         List<AnnouncementEntity> announcementEntitiesMock = new EasyRandom()
                 .objects(AnnouncementEntity.class, 3)
                 .toList();
         Mockito.when(announcementRepository.findAllByUserId(userId)).thenReturn(announcementEntitiesMock);
 
-        List<AnnouncementEntity> localized = announcementServiceImp.findAllByUserId(userId);
+        List<AnnouncementEntity> localized = announcementServiceImp.findAllByUserId();
 
         assertEquals(3, localized.size());
     }
@@ -120,6 +121,9 @@ class AnnouncementServiceImpTest {
     @Test
     @DisplayName("Should deleted announcement when id is valid")
     void delete() {
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
+        Mockito.when(announcementRepository.findByIdAndUserId(announcementId, userAuthenticatedMock.getId()))
+                .thenReturn(Optional.of(new AnnouncementEntity()));
         AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
 

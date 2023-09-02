@@ -13,7 +13,7 @@ public interface AnnouncementService {
 
     AnnouncementEntity findById(UUID id);
 
-    List<AnnouncementEntity> findAllByUserId(UUID userId);
+    List<AnnouncementEntity> findAllByUserId();
 
     void delete(UUID id);
 }

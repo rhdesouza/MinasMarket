@@ -78,7 +78,7 @@ public interface AnnouncementAPI {
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<Announcement>> getAllByUserId(@RequestParam("userId") UUID userId);
+    ResponseEntity<List<Announcement>> getAllByUserId();
 
     @Operation(summary = "Delete announcement", description = "Delete announcement")
     @ApiResponses(value = {
