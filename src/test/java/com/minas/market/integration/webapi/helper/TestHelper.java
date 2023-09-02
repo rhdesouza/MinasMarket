@@ -13,12 +13,11 @@ import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.jeasy.random.FieldPredicates.named;
 
@@ -93,6 +92,13 @@ public class TestHelper {
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+    public HttpHeaders getAuthorization(UUID userId){
+        Token token = tokenRepository.findAllValidTokenByUser(userId).stream().findFirst().orElse(null);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer ".concat(token.getToken()));
+        return httpHeaders;
     }
 
     public UUID createAnnouncement(UUID userId) {
