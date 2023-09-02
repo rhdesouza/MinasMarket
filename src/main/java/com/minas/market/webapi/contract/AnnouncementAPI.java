@@ -1,5 +1,6 @@
 package com.minas.market.webapi.contract;
 
+import com.minas.market.infrastructure.persistence.entity.security.ConstRoles;
 import com.minas.market.webapi.dto.Announcement;
 import com.minas.market.webapi.dto.AnnouncementMessage;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Tag(name = "Announcement")
 public interface AnnouncementAPI {
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Create announcement", description = "Create announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Announcement created",
