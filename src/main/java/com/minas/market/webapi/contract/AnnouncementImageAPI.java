@@ -1,5 +1,6 @@
 package com.minas.market.webapi.contract;
 
+import com.minas.market.infrastructure.persistence.entity.security.ConstRoles;
 import com.minas.market.webapi.dto.AnnouncementImage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +21,9 @@ import java.util.UUID;
 
 @RequestMapping("/api/v1/announcement-image")
 @Tag(name = "Announcement image")
-public interface AnnnouncementImageAPI {
+public interface AnnouncementImageAPI {
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Create announcement images", description = "Create announcement images")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Image Announcement created",
@@ -36,6 +39,7 @@ public interface AnnnouncementImageAPI {
             @NotNull @RequestParam("file") MultipartFile file
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get announcement image", description = "Get announcement image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Image Announcement localized",
@@ -48,6 +52,7 @@ public interface AnnnouncementImageAPI {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<AnnouncementImage> getOne(@PathVariable("id") UUID id);
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get all images by announcements", description = "Get all images by announcements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement localized",
@@ -62,6 +67,7 @@ public interface AnnnouncementImageAPI {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<AnnouncementImage>> getAllByAnnouncementId(@RequestParam("announcementId") UUID announcementId);
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Delete image announcement ", description = "Delete image announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Image announcement deleted"),

@@ -49,8 +49,8 @@ public class AnnouncementController implements AnnouncementAPI {
     }
 
     @Override
-    public ResponseEntity<List<Announcement>> getAllByUserId(UUID userId) {
-        List<AnnouncementEntity> announcementEntities = announcementService.findAllByUserId(userId);
+    public ResponseEntity<List<Announcement>> getAllByUserId() {
+        List<AnnouncementEntity> announcementEntities = announcementService.findAllByUserId();
         List<Announcement> announcementsDTO = announcementEntities.stream().map(announcementMapper::toDTO).toList();
         return ResponseEntity.ok(announcementsDTO);
     }

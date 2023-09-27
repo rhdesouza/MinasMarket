@@ -1,13 +1,13 @@
 package com.minas.market.unit.application.service;
 
 import com.minas.market.application.service.AnnouncementServiceImp;
+import com.minas.market.application.service.UserAuthenticatedServiceImp;
 import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.infrastructure.mapper.AnnouncementMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.security.User;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
-import com.minas.market.webapi.exception.BusinessRuleException;
 import com.minas.market.webapi.exception.NotFoundException;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Assertions;
@@ -38,65 +38,55 @@ class AnnouncementServiceImpTest {
     private AnnouncementRepository announcementRepository;
     @MockBean
     private UserServiceImp userServiceImp;
+    @MockBean
+    private UserAuthenticatedServiceImp userAuthenticatedServiceImp;
     private UUID userId;
     private UUID announcementId;
     private AnnouncementRequest announcementRequest;
+    private User userAuthenticatedMock;
 
     @BeforeEach
     void onInit() {
         announcementRequest = new EasyRandom().nextObject(AnnouncementRequest.class);
         announcementId = UUID.randomUUID();
-        userId = announcementRequest.getUserId();
+        userId = UUID.randomUUID();
+        userAuthenticatedMock = new User();
+        userAuthenticatedMock.setId(userId);
     }
 
     @Test
     @DisplayName("Should create announcement when data is correct")
     void create_onSuccess() {
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest);
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
         Mockito.when(announcementRepository.save(any())).thenReturn(expected);
         Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.of(new User()));
+
         AnnouncementEntity created = announcementServiceImp.create(announcementRequest);
 
         assertEquals(expected, created);
     }
 
     @Test
-    @DisplayName("Should throw an exception when the user is not found")
-    void create_userNotFound() {
-        Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.empty());
-
-        BusinessRuleException exception = Assertions.assertThrows(BusinessRuleException.class,
-                () -> announcementServiceImp.create(announcementRequest));
-
-        assertEquals("User not found", exception.getMessage());
-    }
-
-    @Test
     @DisplayName("Should updated announcement when data is correct")
     void update_onSuccess() {
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest);
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
+        Mockito.when(announcementRepository.findByIdAndUserId(announcementId, userAuthenticatedMock.getId()))
+                .thenReturn(Optional.of(new AnnouncementEntity()));
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
         Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.of(new User()));
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
         Mockito.when(announcementRepository.save(any())).thenReturn(expected);
+
         AnnouncementEntity created = announcementServiceImp.update(announcementId, announcementRequest);
+
         assertEquals(expected, created);
-    }
-
-    @Test
-    @DisplayName("Should throw an exception when the user is not found")
-    void update_userNotFound() {
-        Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.empty());
-
-        BusinessRuleException exception = Assertions.assertThrows(BusinessRuleException.class,
-                () -> announcementServiceImp.update(announcementId, announcementRequest));
-
-        assertEquals("User not found", exception.getMessage());
     }
 
     @Test
     @DisplayName("Should find announcement when exists")
     void findById_onSuccess() {
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest);
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
         AnnouncementEntity localized = announcementServiceImp.findById(announcementId);
 
@@ -117,12 +107,13 @@ class AnnouncementServiceImpTest {
     @Test
     @DisplayName("Should find all announcements by user id")
     void findAllByUserId() {
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
         List<AnnouncementEntity> announcementEntitiesMock = new EasyRandom()
                 .objects(AnnouncementEntity.class, 3)
                 .toList();
         Mockito.when(announcementRepository.findAllByUserId(userId)).thenReturn(announcementEntitiesMock);
 
-        List<AnnouncementEntity> localized = announcementServiceImp.findAllByUserId(userId);
+        List<AnnouncementEntity> localized = announcementServiceImp.findAllByUserId();
 
         assertEquals(3, localized.size());
     }
@@ -130,7 +121,10 @@ class AnnouncementServiceImpTest {
     @Test
     @DisplayName("Should deleted announcement when id is valid")
     void delete() {
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest);
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
+        Mockito.when(announcementRepository.findByIdAndUserId(announcementId, userAuthenticatedMock.getId()))
+                .thenReturn(Optional.of(new AnnouncementEntity()));
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
 
         assertDoesNotThrow(() -> announcementServiceImp.delete(announcementId));

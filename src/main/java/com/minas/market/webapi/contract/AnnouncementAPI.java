@@ -1,5 +1,6 @@
 package com.minas.market.webapi.contract;
 
+import com.minas.market.infrastructure.persistence.entity.security.ConstRoles;
 import com.minas.market.webapi.dto.Announcement;
 import com.minas.market.webapi.dto.AnnouncementMessage;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Tag(name = "Announcement")
 public interface AnnouncementAPI {
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Create announcement", description = "Create announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Announcement created",
@@ -36,6 +39,7 @@ public interface AnnouncementAPI {
             @RequestBody @Valid AnnouncementRequest announcementRequest
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Update announcement", description = "Update announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement updated",
@@ -51,6 +55,7 @@ public interface AnnouncementAPI {
             @RequestBody @Valid AnnouncementRequest announcementRequest
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get announcement", description = "Get announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement localized",
@@ -63,6 +68,7 @@ public interface AnnouncementAPI {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<AnnouncementMessage> getOne(@PathVariable("id") UUID announcementId);
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get all announcements by user", description = "Get all announcements by user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement localized",
@@ -75,8 +81,9 @@ public interface AnnouncementAPI {
             @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content)
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<Announcement>> getAllByUserId(@RequestParam("userId") UUID userId);
+    ResponseEntity<List<Announcement>> getAllByUserId();
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Delete announcement", description = "Delete announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement deleted"),

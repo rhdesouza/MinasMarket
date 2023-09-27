@@ -1,6 +1,5 @@
 package com.minas.market.application.service;
 
-import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.domain.interfaces.AnnouncementService;
 import com.minas.market.domain.interfaces.MessageService;
 import com.minas.market.infrastructure.mapper.AnnouncementMapper;
@@ -24,20 +23,17 @@ public class AnnouncementServiceImp implements AnnouncementService {
     @Autowired
     AnnouncementRepository announcementRepository;
     @Autowired
-    UserServiceImp userServiceImp;
-    @Autowired
     AnnouncementMapper announcementMapper;
     @Autowired
     @Lazy
     MessageService messageService;
+    @Autowired
+    UserAuthenticatedServiceImp authenticatedUser;
 
     @Override
     @Transactional
     public AnnouncementEntity create(AnnouncementRequest announcementRequest) {
-        if (userServiceImp.findUserById(announcementRequest.getUserId()).isEmpty()) {
-            throw new BusinessRuleException("User not found");
-        }
-        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest);
+        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest, authenticatedUser.me().getId());
         entity.setActive(true);
         return announcementRepository.save(entity);
     }
@@ -45,10 +41,8 @@ public class AnnouncementServiceImp implements AnnouncementService {
     @Override
     @Transactional
     public AnnouncementEntity update(UUID announcementId, AnnouncementRequest announcementRequest) {
-        if (userServiceImp.findUserById(announcementRequest.getUserId()).isEmpty()) {
-            throw new BusinessRuleException("User not found");
-        }
-        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest);
+        validateAnnouncementFromUser(announcementId);
+        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest, authenticatedUser.me().getId());
         entity.setId(announcementId);
         entity.setCategory(AnnouncementCategory.getEnum(announcementRequest.getCategory().name()));
         entity.setDescription(announcementRequest.getDescription());
@@ -65,15 +59,21 @@ public class AnnouncementServiceImp implements AnnouncementService {
     }
 
     @Override
-    public List<AnnouncementEntity> findAllByUserId(UUID userId) {
-        return announcementRepository.findAllByUserId(userId);
+    public List<AnnouncementEntity> findAllByUserId() {
+        return announcementRepository.findAllByUserId(authenticatedUser.me().getId());
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
+        validateAnnouncementFromUser(id);
         AnnouncementEntity announcement = findById(id);
         announcement.setActive(false);
         announcementRepository.save(announcement);
+    }
+
+    private void validateAnnouncementFromUser(UUID announcementId) {
+        announcementRepository.findByIdAndUserId(announcementId, authenticatedUser.me().getId())
+                .orElseThrow(() -> new BusinessRuleException("Announcement does not belong to the user"));
     }
 }

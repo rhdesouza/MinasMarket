@@ -3,7 +3,7 @@ package com.minas.market.webapi.controller;
 import com.minas.market.domain.interfaces.AnnouncementImageService;
 import com.minas.market.infrastructure.mapper.AnnouncementImageMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementImageEntity;
-import com.minas.market.webapi.contract.AnnnouncementImageAPI;
+import com.minas.market.webapi.contract.AnnouncementImageAPI;
 import com.minas.market.webapi.dto.AnnouncementImage;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-public class AnnouncementImageController implements AnnnouncementImageAPI {
+public class AnnouncementImageController implements AnnouncementImageAPI {
 
     @Autowired
     AnnouncementImageService announcementImageService;

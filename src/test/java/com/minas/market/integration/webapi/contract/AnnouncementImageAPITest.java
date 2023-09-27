@@ -7,13 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.net.URI;
 import java.util.HexFormat;
@@ -29,19 +28,19 @@ class AnnouncementImageAPITest extends TestHelper {
     private static final URI PATH = URI.create("/api/v1/announcement-image");
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
     private UUID announcementId;
+    private HttpHeaders httpHeadersAuth;
 
     @BeforeEach
     public void init() {
         UUID userId = createUser(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"));
+        httpHeadersAuth = getAuthorization(userId);
         announcementId = createAnnouncement(userId);
     }
 
     @Test
     @DisplayName("Integration test for all methods in Announcement Image API")
-    void announcementAPI_CRUD() throws Exception {
+    void announcementAPI() throws Exception {
         String announcementImageId = postAnnouncementImage();
         getAnnouncementImage(announcementImageId);
         getAllByAnnouncementId();
@@ -52,12 +51,15 @@ class AnnouncementImageAPITest extends TestHelper {
         MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "jpg", HexFormat.ofDelimiter(":")
                 .parseHex("e0:4f:d0:20:ea:3a:69:10:a2:d8:08:00:2b:30:30:9d"));
 
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        HttpHeaders httpHeaders = httpHeadersAuth;
+        httpHeaders.add("announcement-id", announcementId.toString());
+
         ResultActions resultActions = mockMvc.perform(
                 multipart(PATH)
                         .file(file)
-                        .header("announcement-id", announcementId)
+                        .headers(httpHeaders)
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+
         ).andExpect(status().isCreated());
 
         return resultActions.andReturn().getResponse().getContentAsString().replaceAll("\"", "");
@@ -65,6 +67,7 @@ class AnnouncementImageAPITest extends TestHelper {
 
     private void getAnnouncementImage(String announcementImageId) throws Exception {
         mockMvc.perform(get(PATH.getPath() + "/" + announcementImageId)
+                        .headers(httpHeadersAuth)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk())
@@ -77,6 +80,7 @@ class AnnouncementImageAPITest extends TestHelper {
     private void getAllByAnnouncementId() throws Exception {
         mockMvc.perform(get(PATH)
                         .param("announcementId", announcementId.toString())
+                        .headers(httpHeadersAuth)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk())
@@ -85,11 +89,13 @@ class AnnouncementImageAPITest extends TestHelper {
 
     private void deleteAnnouncementImage(String announcementImageId) throws Exception {
         mockMvc.perform(delete(PATH.getPath() + "/" + announcementImageId)
+                        .headers(httpHeadersAuth)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk());
 
         mockMvc.perform(get(PATH.getPath() + "/" + announcementImageId)
+                        .headers(httpHeadersAuth)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isNotFound())
