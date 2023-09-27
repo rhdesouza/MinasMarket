@@ -39,6 +39,7 @@ public interface AnnouncementAPI {
             @RequestBody @Valid AnnouncementRequest announcementRequest
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Update announcement", description = "Update announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement updated",
@@ -54,6 +55,7 @@ public interface AnnouncementAPI {
             @RequestBody @Valid AnnouncementRequest announcementRequest
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get announcement", description = "Get announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement localized",
@@ -66,6 +68,7 @@ public interface AnnouncementAPI {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<AnnouncementMessage> getOne(@PathVariable("id") UUID announcementId);
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get all announcements by user", description = "Get all announcements by user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement localized",
@@ -80,6 +83,7 @@ public interface AnnouncementAPI {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<Announcement>> getAllByUserId();
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Delete announcement", description = "Delete announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Announcement deleted"),
