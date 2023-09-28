@@ -26,12 +26,15 @@ public class MessageServiceImp implements MessageService {
     private UserServiceImp userServiceImp;
     @Autowired
     private AnnouncementService announcementService;
+    @Autowired
+    UserAuthenticatedServiceImp authenticatedUser;
 
     @Override
     @Transactional
     public MessageEntity create(MessageRequest messageRequest) {
-        validateUserAndAnnouncements(messageRequest);
-        MessageEntity entity = messageMapper.toEntity(messageRequest);
+        UUID userId = authenticatedUser.me().getId();
+        validateUserAndAnnouncements(messageRequest, userId);
+        MessageEntity entity = messageMapper.toEntity(messageRequest, userId);
         entity.setRead(false);
         entity.setDeleted(false);
         return messageRepository.save(entity);
@@ -40,14 +43,15 @@ public class MessageServiceImp implements MessageService {
     @Override
     @Transactional
     public MessageEntity update(UUID id, MessageRequest messageRequest) {
-        validateUserAndAnnouncements(messageRequest);
+        UUID userId = authenticatedUser.me().getId();
+        validateUserAndAnnouncements(messageRequest, userId);
         MessageEntity messageEntity = findById(id);
         messageEntity.setMessage(messageRequest.getMessage());
         return messageRepository.save(messageEntity);
     }
 
-    private void validateUserAndAnnouncements(MessageRequest messageRequest) {
-        if (userServiceImp.findUserById(messageRequest.getUserId()).isEmpty()) {
+    private void validateUserAndAnnouncements(MessageRequest messageRequest, UUID userId) {
+        if (userServiceImp.findUserById(userId).isEmpty()) {
             throw new NotFoundException("User not found");
         }
         announcementService.findById(messageRequest.getAnnouncementId());

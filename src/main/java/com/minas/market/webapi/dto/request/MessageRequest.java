@@ -14,8 +14,6 @@ import java.util.UUID;
 public class MessageRequest {
 
     @NotNull
-    private UUID userId;
-    @NotNull
     private UUID announcementId;
     @NotNull
     @NotEmpty

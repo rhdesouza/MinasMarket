@@ -1,5 +1,6 @@
 package com.minas.market.webapi.contract;
 
+import com.minas.market.infrastructure.persistence.entity.security.ConstRoles;
 import com.minas.market.webapi.dto.Announcement;
 import com.minas.market.webapi.dto.Message;
 import com.minas.market.webapi.dto.request.MessageRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/message")
 @Tag(name = "Message")
 public interface MessageAPI {
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Create Message", description = "Create message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Message created",
@@ -35,6 +38,7 @@ public interface MessageAPI {
             @RequestBody @Valid MessageRequest messageRequest
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Update message", description = "Update message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message updated",
@@ -50,6 +54,7 @@ public interface MessageAPI {
             @RequestBody @Valid MessageRequest messageRequest
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get message", description = "Get message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message localized",
@@ -62,6 +67,7 @@ public interface MessageAPI {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Message> getOne(@PathVariable("id") UUID id);
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Delete message", description = "Delete message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message deleted"),
@@ -72,6 +78,7 @@ public interface MessageAPI {
     @DeleteMapping("/{id}")
     void delete(@PathVariable("id") UUID id);
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Get all messages by user or announcement", description = "Get all messages by user or announcement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Messages localized",
@@ -89,6 +96,7 @@ public interface MessageAPI {
             @RequestParam(name = "announcementId", required = false) UUID announcementId
     );
 
+    @Secured({ConstRoles.ROLE_ADMIN_ADMIN})
     @Operation(summary = "Read Message", description = "Read message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Message read",
