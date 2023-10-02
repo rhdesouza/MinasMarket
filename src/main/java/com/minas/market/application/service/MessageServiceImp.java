@@ -10,10 +10,14 @@ import com.minas.market.webapi.dto.request.MessageRequest;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class MessageServiceImp implements MessageService {
@@ -59,7 +63,19 @@ public class MessageServiceImp implements MessageService {
 
     @Override
     public MessageEntity findById(UUID id) {
-        return messageRepository.findById(id).orElseThrow(() -> new NotFoundException("Message not found"));
+        //return messageRepository.findById(id).orElseThrow(() -> new NotFoundException("Message not found"));
+        return findByIdAssync(id).orElseThrow(() -> new NotFoundException("Message not found"));
+    }
+
+    @Async
+    private Optional<MessageEntity> findByIdAssync(UUID id) {
+        CompletableFuture<Optional<MessageEntity>> entity = CompletableFuture.supplyAsync(() -> messageRepository.findById(id));
+        CompletableFuture.allOf(entity);
+        try {
+            return entity.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

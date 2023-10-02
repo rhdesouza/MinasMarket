@@ -24,6 +24,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static org.jeasy.random.FieldPredicates.named;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
