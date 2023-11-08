@@ -9,7 +9,6 @@ import com.minas.market.infrastructure.persistence.repository.MessageRepository;
 import com.minas.market.webapi.dto.request.MessageRequest;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +21,19 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class MessageServiceImp implements MessageService {
 
-    @Autowired
-    private MessageRepository messageRepository;
-    @Autowired
-    private MessageMapper messageMapper;
-    @Autowired
-    private UserServiceImp userServiceImp;
-    @Autowired
-    private AnnouncementService announcementService;
-    @Autowired
-    UserAuthenticatedServiceImp authenticatedUser;
+    private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
+    private final UserServiceImp userServiceImp;
+    private final AnnouncementService announcementService;
+    private final UserAuthenticatedServiceImp authenticatedUser;
+
+    public MessageServiceImp(MessageRepository messageRepository, MessageMapper messageMapper, UserServiceImp userServiceImp, AnnouncementService announcementService, UserAuthenticatedServiceImp authenticatedUser) {
+        this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
+        this.userServiceImp = userServiceImp;
+        this.announcementService = announcementService;
+        this.authenticatedUser = authenticatedUser;
+    }
 
     @Override
     @Transactional

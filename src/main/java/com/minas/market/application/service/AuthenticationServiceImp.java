@@ -2,6 +2,7 @@ package com.minas.market.application.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minas.market.application.service.security.JwtService;
+import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.domain.interfaces.AuthenticationService;
 import com.minas.market.infrastructure.mapper.AuthenticationMapper;
 import com.minas.market.infrastructure.mapper.UserMapper;
@@ -17,10 +18,8 @@ import com.minas.market.webapi.dto.AuthenticationResponse;
 import com.minas.market.webapi.dto.request.RegisterUserRequest;
 import com.minas.market.webapi.dto.request.UserDTO;
 import com.minas.market.webapi.exception.BusinessRuleException;
-import com.minas.market.application.service.security.UserServiceImp;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationServiceImp implements AuthenticationService {
     private final UserRepository repository;
     private final TokenRepository tokenRepository;
@@ -43,6 +41,18 @@ public class AuthenticationServiceImp implements AuthenticationService {
     private final UserServiceImp userServiceImp;
     private final UserMapper userMapper;
     private final AuthenticationMapper authenticationMapper;
+
+    public AuthenticationServiceImp(UserRepository repository, TokenRepository tokenRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, UserServiceImp userServiceImp, UserMapper userMapper, AuthenticationMapper authenticationMapper) {
+        this.repository = repository;
+        this.tokenRepository = tokenRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.userServiceImp = userServiceImp;
+        this.userMapper = userMapper;
+        this.authenticationMapper = authenticationMapper;
+    }
 
     @Override
     public AuthenticationResponse register(RegisterUserRequest registerUserRequest) {

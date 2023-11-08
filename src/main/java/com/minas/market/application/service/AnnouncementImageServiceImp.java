@@ -2,13 +2,11 @@ package com.minas.market.application.service;
 
 import com.minas.market.domain.interfaces.AnnouncementImageService;
 import com.minas.market.domain.interfaces.AnnouncementService;
-import com.minas.market.infrastructure.mapper.AnnouncementImageMapper;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementImageEntity;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementImageRepository;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartException;
@@ -23,12 +21,13 @@ import java.util.UUID;
 @Service
 public class AnnouncementImageServiceImp implements AnnouncementImageService {
 
-    @Autowired
-    private AnnouncementImageMapper announcementImageMapper;
-    @Autowired
-    private AnnouncementImageRepository announcementImageRepository;
-    @Autowired
-    private AnnouncementService announcementService;
+    private final AnnouncementImageRepository announcementImageRepository;
+    private final AnnouncementService announcementService;
+
+    public AnnouncementImageServiceImp(AnnouncementImageRepository announcementImageRepository, AnnouncementService announcementService) {
+        this.announcementImageRepository = announcementImageRepository;
+        this.announcementService = announcementService;
+    }
 
     @Override
     @Transactional
