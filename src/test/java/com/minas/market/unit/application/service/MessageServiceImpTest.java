@@ -2,6 +2,7 @@ package com.minas.market.unit.application.service;
 
 import com.minas.market.application.service.AnnouncementServiceImp;
 import com.minas.market.application.service.MessageServiceImp;
+import com.minas.market.application.service.UserAuthenticatedServiceImp;
 import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.infrastructure.mapper.MessageMapper;
 import com.minas.market.infrastructure.persistence.entity.MessageEntity;
@@ -10,6 +11,7 @@ import com.minas.market.infrastructure.persistence.repository.MessageRepository;
 import com.minas.market.webapi.dto.request.MessageRequest;
 import com.minas.market.webapi.exception.NotFoundException;
 import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.jeasy.random.FieldPredicates.named;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,21 +44,29 @@ class MessageServiceImpTest {
     private AnnouncementServiceImp announcementServiceImp;
     @MockBean
     private UserServiceImp userServiceImp;
+    @MockBean
+    private UserAuthenticatedServiceImp userAuthenticatedServiceImp;
     private MessageRequest messageRequest;
 
     @BeforeEach
     private void init() {
         messageRequest = new EasyRandom().nextObject(MessageRequest.class);
+
+        User userMock = new EasyRandom(
+                new EasyRandomParameters().randomize(named("address"), List::of)
+                        .randomize(named("announcement"), List::of)
+                        .randomize(named("messages"), List::of)
+        ).nextObject(User.class);
+        Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userMock);
     }
 
     @Test
     @DisplayName("Should create message when data is correct")
     void create_onSuccess() {
         validateUserAndAnnouncements_success();
-
         MessageEntity expected = new MessageEntity();
         expected.setId(UUID.randomUUID());
-
+        Mockito.when(userServiceImp.findUserById(any(UUID.class))).thenReturn(Optional.of(new User()));
         Mockito.when(messageRepository.save(any(MessageEntity.class))).thenReturn(expected);
 
         MessageEntity entitySaved = messageServiceImp.create(messageRequest);
@@ -64,7 +75,7 @@ class MessageServiceImpTest {
     }
 
     private void validateUserAndAnnouncements_success() {
-        Mockito.when(userServiceImp.findUserById(messageRequest.getUserId())).thenReturn(Optional.of(new User()));
+        Mockito.when(userServiceImp.findUserById(UUID.randomUUID())).thenReturn(Optional.of(new User()));
         Mockito.when(announcementServiceImp.findById(messageRequest.getAnnouncementId())).thenReturn(null);
     }
 
@@ -72,11 +83,11 @@ class MessageServiceImpTest {
     @DisplayName("Should updated message when data is correct")
     void update_onSuccess() {
         validateUserAndAnnouncements_success();
-
         UUID messageId = UUID.randomUUID();
         MessageEntity expected = new EasyRandom().nextObject(MessageEntity.class);
         Mockito.when(messageRepository.findById(messageId)).thenReturn(Optional.of(expected));
         Mockito.when(messageRepository.save(any(MessageEntity.class))).thenReturn(expected);
+        Mockito.when(userServiceImp.findUserById(any(UUID.class))).thenReturn(Optional.of(new User()));
 
         MessageEntity updated = messageServiceImp.update(messageId, messageRequest);
 
@@ -86,6 +97,8 @@ class MessageServiceImpTest {
     @Test
     @DisplayName("Should return error when user is not found")
     void update_notFoundUser() {
+
+
         UUID messageId = UUID.randomUUID();
         Mockito.when(userServiceImp.findUserById(any(UUID.class))).thenReturn(Optional.empty());
 

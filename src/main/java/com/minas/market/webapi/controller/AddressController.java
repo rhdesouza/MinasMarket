@@ -6,7 +6,6 @@ import com.minas.market.infrastructure.persistence.entity.AddressEntity;
 import com.minas.market.webapi.contract.AddressAPI;
 import com.minas.market.webapi.dto.Address;
 import com.minas.market.webapi.dto.request.AddressRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,12 +16,13 @@ import java.util.UUID;
 
 @RestController
 public class AddressController implements AddressAPI {
+    private final AddressService addressService;
+    private final AddressMapper addressMapper;
 
-    @Autowired
-    private AddressService addressService;
-
-    @Autowired
-    private AddressMapper addressMapper;
+    public AddressController(AddressService addressService, AddressMapper addressMapper) {
+        this.addressService = addressService;
+        this.addressMapper = addressMapper;
+    }
 
     @Override
     public ResponseEntity<UUID> create(UUID userId, AddressRequest addressCreate) {

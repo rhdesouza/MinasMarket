@@ -7,18 +7,20 @@ import com.minas.market.webapi.dto.AuthenticationRequest;
 import com.minas.market.webapi.dto.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
 @RestController
 public class AuthenticationController implements AutenticationAPI {
 
     private final AuthenticationService service;
+
+    public AuthenticationController(AuthenticationService service) {
+        this.service = service;
+    }
 
     @Override
     public ResponseEntity<AuthenticationResponse> register(RegisterUserRequest registerUserRequest) {

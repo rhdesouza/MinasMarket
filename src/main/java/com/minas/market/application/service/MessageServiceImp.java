@@ -9,7 +9,6 @@ import com.minas.market.infrastructure.persistence.repository.MessageRepository;
 import com.minas.market.webapi.dto.request.MessageRequest;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,20 +17,26 @@ import java.util.UUID;
 @Service
 public class MessageServiceImp implements MessageService {
 
-    @Autowired
-    private MessageRepository messageRepository;
-    @Autowired
-    private MessageMapper messageMapper;
-    @Autowired
-    private UserServiceImp userServiceImp;
-    @Autowired
-    private AnnouncementService announcementService;
+    private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
+    private final UserServiceImp userServiceImp;
+    private final AnnouncementService announcementService;
+    private final UserAuthenticatedServiceImp authenticatedUser;
+
+    public MessageServiceImp(MessageRepository messageRepository, MessageMapper messageMapper, UserServiceImp userServiceImp, AnnouncementService announcementService, UserAuthenticatedServiceImp authenticatedUser) {
+        this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
+        this.userServiceImp = userServiceImp;
+        this.announcementService = announcementService;
+        this.authenticatedUser = authenticatedUser;
+    }
 
     @Override
     @Transactional
     public MessageEntity create(MessageRequest messageRequest) {
-        validateUserAndAnnouncements(messageRequest);
-        MessageEntity entity = messageMapper.toEntity(messageRequest);
+        UUID userId = authenticatedUser.me().getId();
+        validateUserAndAnnouncements(messageRequest, userId);
+        MessageEntity entity = messageMapper.toEntity(messageRequest, userId);
         entity.setRead(false);
         entity.setDeleted(false);
         return messageRepository.save(entity);
@@ -40,14 +45,15 @@ public class MessageServiceImp implements MessageService {
     @Override
     @Transactional
     public MessageEntity update(UUID id, MessageRequest messageRequest) {
-        validateUserAndAnnouncements(messageRequest);
+        UUID userId = authenticatedUser.me().getId();
+        validateUserAndAnnouncements(messageRequest, userId);
         MessageEntity messageEntity = findById(id);
         messageEntity.setMessage(messageRequest.getMessage());
         return messageRepository.save(messageEntity);
     }
 
-    private void validateUserAndAnnouncements(MessageRequest messageRequest) {
-        if (userServiceImp.findUserById(messageRequest.getUserId()).isEmpty()) {
+    private void validateUserAndAnnouncements(MessageRequest messageRequest, UUID userId) {
+        if (userServiceImp.findUserById(userId).isEmpty()) {
             throw new NotFoundException("User not found");
         }
         announcementService.findById(messageRequest.getAnnouncementId());

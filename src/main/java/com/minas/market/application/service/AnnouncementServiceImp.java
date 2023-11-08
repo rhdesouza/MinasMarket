@@ -10,7 +10,6 @@ import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import com.minas.market.webapi.exception.BusinessRuleException;
 import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +19,19 @@ import java.util.UUID;
 @Service
 public class AnnouncementServiceImp implements AnnouncementService {
 
-    @Autowired
-    AnnouncementRepository announcementRepository;
-    @Autowired
-    AnnouncementMapper announcementMapper;
-    @Autowired
+    private final AnnouncementRepository announcementRepository;
+    private final AnnouncementMapper announcementMapper;
     @Lazy
-    MessageService messageService;
-    @Autowired
-    UserAuthenticatedServiceImp authenticatedUser;
+    private final MessageService messageService;
+    private final UserAuthenticatedServiceImp authenticatedUser;
+
+    public AnnouncementServiceImp(AnnouncementRepository announcementRepository, AnnouncementMapper announcementMapper, @Lazy MessageService messageService, UserAuthenticatedServiceImp authenticatedUser) {
+        this.announcementRepository = announcementRepository;
+        this.announcementMapper = announcementMapper;
+        this.messageService = messageService;
+        this.authenticatedUser = authenticatedUser;
+    }
+
 
     @Override
     @Transactional

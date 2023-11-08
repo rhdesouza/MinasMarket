@@ -7,8 +7,6 @@ import com.minas.market.webapi.contract.AnnouncementAPI;
 import com.minas.market.webapi.dto.Announcement;
 import com.minas.market.webapi.dto.AnnouncementMessage;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,15 +15,15 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @RestController
 public class AnnouncementController implements AnnouncementAPI {
+    private final AnnouncementService announcementService;
+    private final AnnouncementMapper announcementMapper;
 
-    @Autowired
-    AnnouncementService announcementService;
-
-    @Autowired
-    AnnouncementMapper announcementMapper;
+    public AnnouncementController(AnnouncementService announcementService, AnnouncementMapper announcementMapper) {
+        this.announcementService = announcementService;
+        this.announcementMapper = announcementMapper;
+    }
 
     @Override
     public ResponseEntity<UUID> create(AnnouncementRequest announcementRequest) {

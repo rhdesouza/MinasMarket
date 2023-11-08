@@ -1,26 +1,30 @@
 package com.minas.market.application.service;
 
+import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.domain.interfaces.AddressService;
 import com.minas.market.infrastructure.mapper.AddressMapper;
-import com.minas.market.webapi.exception.NotFoundException;
-import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.infrastructure.persistence.entity.AddressEntity;
 import com.minas.market.infrastructure.persistence.repository.AddressRepository;
 import com.minas.market.webapi.dto.request.AddressRequest;
+import com.minas.market.webapi.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class AddressServiceImp implements AddressService {
 
-    private AddressRepository addressRepository;
-    private UserServiceImp userServiceImp;
-    private AddressMapper addressMapper;
+    private final AddressRepository addressRepository;
+    private final UserServiceImp userServiceImp;
+    private final AddressMapper addressMapper;
+
+    public AddressServiceImp(AddressRepository addressRepository, UserServiceImp userServiceImp, AddressMapper addressMapper) {
+        this.addressRepository = addressRepository;
+        this.userServiceImp = userServiceImp;
+        this.addressMapper = addressMapper;
+    }
 
     @Transactional
     public AddressEntity create(UUID userId, AddressRequest addressCreate) {
