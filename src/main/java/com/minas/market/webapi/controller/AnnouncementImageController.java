@@ -6,8 +6,6 @@ import com.minas.market.infrastructure.persistence.entity.AnnouncementImageEntit
 import com.minas.market.webapi.contract.AnnouncementImageAPI;
 import com.minas.market.webapi.dto.AnnouncementImage;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,15 +15,16 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @RestController
 public class AnnouncementImageController implements AnnouncementImageAPI {
 
-    @Autowired
-    AnnouncementImageService announcementImageService;
+    private final AnnouncementImageService announcementImageService;
+    private final AnnouncementImageMapper announcementImageMapper;
 
-    @Autowired
-    AnnouncementImageMapper announcementImageMapper;
+    public AnnouncementImageController(AnnouncementImageService announcementImageService, AnnouncementImageMapper announcementImageMapper) {
+        this.announcementImageService = announcementImageService;
+        this.announcementImageMapper = announcementImageMapper;
+    }
 
     @Override
     public ResponseEntity<UUID> create(

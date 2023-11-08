@@ -65,7 +65,6 @@ public class MessageServiceImp implements MessageService {
 
     @Override
     public MessageEntity findById(UUID id) {
-        //return messageRepository.findById(id).orElseThrow(() -> new NotFoundException("Message not found"));
         return findByIdAssync(id).orElseThrow(() -> new NotFoundException("Message not found"));
     }
 
