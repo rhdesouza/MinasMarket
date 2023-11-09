@@ -31,7 +31,7 @@ public interface PublicAPI {
     })
     @GetMapping(value = "/announcements", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<Announcement>> getAnnouncements(
-            @RequestParam("title") String title
+            @RequestParam(value = "title", required = false) String title
     );
 
 
