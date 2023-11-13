@@ -30,7 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PublicAPITest extends TestHelper {
     private static final URI PUBLIC_PATH = URI.create("/api/v1/public/announcements");
     private static final URI PRIVATE_PATH_ANNOUNCEMENTS = URI.create("/api/v1/announcement");
-    private static final String DESCRIPTION = "JAVA PARA INICIANTES";
+    private static final String DESCRIPTION = "Livro de java para iniciantes.";
+    private static final String TITLE = "JAVA PARA INICIANTES";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,6 +42,7 @@ class PublicAPITest extends TestHelper {
         HttpHeaders httpHeadersAuth = getAuthorization(userId);
         AnnouncementRequest announcementRequest = new EasyRandom(
                 new EasyRandomParameters()
+                        .randomize(named("title"), () -> TITLE)
                         .randomize(named("description"), () -> DESCRIPTION)
                         .randomize(named("userId"), () -> userId)
                         .randomize(named("saleValue"), () -> BigDecimal.TEN)

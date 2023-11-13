@@ -16,7 +16,7 @@ public interface AnnouncementRepository extends JpaRepository<AnnouncementEntity
 
     Optional<AnnouncementEntity> findByIdAndUserId(UUID id, UUID userId);
 
-    @Query("FROM AnnouncementEntity es WHERE UPPER(es.description) LIKE %:title%")
+    @Query("FROM AnnouncementEntity es WHERE UPPER(es.title) LIKE %:title%")
     List<AnnouncementEntity> findAllLikeDescription(@Param(value = "title") String title);
 
 }

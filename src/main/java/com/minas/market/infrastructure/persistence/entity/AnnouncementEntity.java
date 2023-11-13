@@ -18,7 +18,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "announcement")
+@Table(name = "announcement", indexes = @Index(columnList = "title"))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,6 +34,10 @@ public class AnnouncementEntity extends Auditable<String> implements Serializabl
     @NotNull
     @Column(name = "user_id")
     private UUID userId;
+
+    @NotNull
+    @Column(name = "title")
+    private String title;
 
     @Enumerated(EnumType.STRING)
     private AnnouncementCategory category;
