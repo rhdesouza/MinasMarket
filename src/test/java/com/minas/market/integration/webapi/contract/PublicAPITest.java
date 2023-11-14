@@ -39,10 +39,12 @@ class PublicAPITest extends TestHelper {
     @BeforeEach
     public void init() throws Exception {
         UUID userId = createUser(UUID.fromString("c6cfbb5f-6715-48b6-b180-f7e2f3129f45"));
+        UUID categoryId = createAnnouncementCategory(UUID.randomUUID());
         HttpHeaders httpHeadersAuth = getAuthorization(userId);
         AnnouncementRequest announcementRequest = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("title"), () -> TITLE)
+                        .randomize(named("categoryId"), ()-> categoryId)
                         .randomize(named("description"), () -> DESCRIPTION)
                         .randomize(named("userId"), () -> userId)
                         .randomize(named("saleValue"), () -> BigDecimal.TEN)

@@ -3,12 +3,12 @@ package com.minas.market.webapi.dto.request;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class AnnouncementRequest {
     @NotNull
     private String title;
     @NotNull
-    private AnnouncementCategoryRequest category;
+    private UUID categoryId;
     @NotNull
     AnnouncementTypeRequest type;
     @NotEmpty

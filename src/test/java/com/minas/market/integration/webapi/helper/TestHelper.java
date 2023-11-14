@@ -2,9 +2,11 @@ package com.minas.market.integration.webapi.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minas.market.application.service.security.JwtService;
+import com.minas.market.infrastructure.persistence.entity.AnnouncementCategoryEntity;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.enums.TypeUser;
 import com.minas.market.infrastructure.persistence.entity.security.*;
+import com.minas.market.infrastructure.persistence.repository.AnnouncementCategoryRepository;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.infrastructure.persistence.repository.security.RoleRepository;
 import com.minas.market.infrastructure.persistence.repository.security.TokenRepository;
@@ -32,6 +34,8 @@ public class TestHelper {
     TokenRepository tokenRepository;
     @Autowired
     AnnouncementRepository announcementRepository;
+    @Autowired
+    AnnouncementCategoryRepository announcementCategoryRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -102,10 +106,14 @@ public class TestHelper {
     }
 
     public UUID createAnnouncement(UUID userId) {
+        UUID categoryId = createAnnouncementCategory(UUID.randomUUID());
+        AnnouncementCategoryEntity announcementCategoryEntity = announcementCategoryRepository.findById(categoryId).get();
+
         AnnouncementEntity announcementEntity = new EasyRandom(
                 new EasyRandomParameters()
                         .randomize(named("userId"), () -> userId)
                         .randomize(named("description"), () -> "test")
+                        .randomize(named("announcementCategory"), () -> announcementCategoryEntity)
                         .excludeField(named("id"))
                         .excludeField(named("createdBy"))
                         .excludeField(named("createdDate"))
@@ -115,6 +123,14 @@ public class TestHelper {
                         .excludeField(named("messages"))
         ).nextObject(AnnouncementEntity.class);
         return announcementRepository.save(announcementEntity).getId();
+    }
+
+    public UUID createAnnouncementCategory(UUID idCategory){
+        AnnouncementCategoryEntity entity = new EasyRandom(
+                new EasyRandomParameters()
+                        .randomize(named("id"), () -> idCategory)
+        ).nextObject(AnnouncementCategoryEntity.class);
+        return announcementCategoryRepository.save(entity).getId();
     }
 
     protected static String asJsonString(final Object obj) {
@@ -128,5 +144,6 @@ public class TestHelper {
     @AfterEach
     public void afterHelper() {
         announcementRepository.deleteAll();
+        announcementCategoryRepository.deleteAll();
     }
 }

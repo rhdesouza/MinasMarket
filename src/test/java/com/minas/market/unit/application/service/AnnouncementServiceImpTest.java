@@ -4,8 +4,10 @@ import com.minas.market.application.service.AnnouncementServiceImp;
 import com.minas.market.application.service.UserAuthenticatedServiceImp;
 import com.minas.market.application.service.security.UserServiceImp;
 import com.minas.market.infrastructure.mapper.AnnouncementMapper;
+import com.minas.market.infrastructure.persistence.entity.AnnouncementCategoryEntity;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
 import com.minas.market.infrastructure.persistence.entity.security.User;
+import com.minas.market.infrastructure.persistence.repository.AnnouncementCategoryRepository;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import com.minas.market.webapi.exception.NotFoundException;
@@ -37,6 +39,8 @@ class AnnouncementServiceImpTest {
     @MockBean
     private AnnouncementRepository announcementRepository;
     @MockBean
+    private AnnouncementCategoryRepository announcementCategoryRepository;
+    @MockBean
     private UserServiceImp userServiceImp;
     @MockBean
     private UserAuthenticatedServiceImp userAuthenticatedServiceImp;
@@ -45,9 +49,12 @@ class AnnouncementServiceImpTest {
     private AnnouncementRequest announcementRequest;
     private User userAuthenticatedMock;
 
+    private AnnouncementCategoryEntity announcementCategoryMock;
+
     @BeforeEach
     void onInit() {
         announcementRequest = new EasyRandom().nextObject(AnnouncementRequest.class);
+        announcementCategoryMock = new EasyRandom().nextObject(AnnouncementCategoryEntity.class);
         announcementId = UUID.randomUUID();
         userId = UUID.randomUUID();
         userAuthenticatedMock = new User();
@@ -58,7 +65,8 @@ class AnnouncementServiceImpTest {
     @DisplayName("Should create announcement when data is correct")
     void create_onSuccess() {
         Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
+        Mockito.when(announcementCategoryRepository.findById(announcementRequest.getCategoryId())).thenReturn(Optional.of(announcementCategoryMock));
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId, announcementCategoryMock);
         Mockito.when(announcementRepository.save(any())).thenReturn(expected);
         Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.of(new User()));
 
@@ -73,7 +81,8 @@ class AnnouncementServiceImpTest {
         Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
         Mockito.when(announcementRepository.findByIdAndUserId(announcementId, userAuthenticatedMock.getId()))
                 .thenReturn(Optional.of(new AnnouncementEntity()));
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
+        Mockito.when(announcementCategoryRepository.findById(announcementRequest.getCategoryId())).thenReturn(Optional.of(announcementCategoryMock));
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId, announcementCategoryMock);
         Mockito.when(userServiceImp.findUserById(userId)).thenReturn(Optional.of(new User()));
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
         Mockito.when(announcementRepository.save(any())).thenReturn(expected);
@@ -86,7 +95,8 @@ class AnnouncementServiceImpTest {
     @Test
     @DisplayName("Should find announcement when exists")
     void findById_onSuccess() {
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
+        Mockito.when(announcementCategoryRepository.findById(announcementRequest.getCategoryId())).thenReturn(Optional.of(announcementCategoryMock));
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId, announcementCategoryMock);
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
         AnnouncementEntity localized = announcementServiceImp.findById(announcementId);
 
@@ -124,7 +134,8 @@ class AnnouncementServiceImpTest {
         Mockito.when(userAuthenticatedServiceImp.me()).thenReturn(userAuthenticatedMock);
         Mockito.when(announcementRepository.findByIdAndUserId(announcementId, userAuthenticatedMock.getId()))
                 .thenReturn(Optional.of(new AnnouncementEntity()));
-        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId);
+        Mockito.when(announcementCategoryRepository.findById(announcementRequest.getCategoryId())).thenReturn(Optional.of(announcementCategoryMock));
+        AnnouncementEntity expected = announcementMapper.toEntity(announcementRequest, userId, announcementCategoryMock);
         Mockito.when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(expected));
 
         assertDoesNotThrow(() -> announcementServiceImp.delete(announcementId));
