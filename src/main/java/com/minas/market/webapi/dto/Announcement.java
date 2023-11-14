@@ -10,6 +10,7 @@ import java.util.UUID;
 public class Announcement {
     private UUID id;
     private UUID userId;
+    private String title;
     private String category;
     private String description;
     private BigDecimal saleValue;

@@ -8,13 +8,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnnouncementRequest {
     @NotNull
-    private AnnouncementCategoryRequest category;
+    private String title;
+    @NotNull
+    private UUID categoryId;
     @NotNull
     AnnouncementTypeRequest type;
     @NotEmpty

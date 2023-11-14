@@ -1,7 +1,6 @@
 package com.minas.market.infrastructure.persistence.entity;
 
 import com.minas.market.infrastructure.config.auditable.Auditable;
-import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementCategory;
 import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +17,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "announcement")
+@Table(name = "announcement", indexes = @Index(columnList = "title"))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,8 +34,13 @@ public class AnnouncementEntity extends Auditable<String> implements Serializabl
     @Column(name = "user_id")
     private UUID userId;
 
-    @Enumerated(EnumType.STRING)
-    private AnnouncementCategory category;
+    @NotNull
+    @Column(name = "title")
+    private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = NOT_AUDITED)
+    private AnnouncementCategoryEntity announcementCategory;
 
     @Column(nullable = false)
     private AnnouncementType type;

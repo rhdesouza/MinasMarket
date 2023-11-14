@@ -1,10 +1,11 @@
 package com.minas.market.application.service;
 
+import com.minas.market.domain.interfaces.AnnouncementCategoryService;
 import com.minas.market.domain.interfaces.AnnouncementService;
 import com.minas.market.domain.interfaces.MessageService;
 import com.minas.market.infrastructure.mapper.AnnouncementMapper;
+import com.minas.market.infrastructure.persistence.entity.AnnouncementCategoryEntity;
 import com.minas.market.infrastructure.persistence.entity.AnnouncementEntity;
-import com.minas.market.infrastructure.persistence.entity.enums.AnnouncementCategory;
 import com.minas.market.infrastructure.persistence.repository.AnnouncementRepository;
 import com.minas.market.webapi.dto.request.AnnouncementRequest;
 import com.minas.market.webapi.exception.BusinessRuleException;
@@ -21,13 +22,15 @@ public class AnnouncementServiceImp implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
     private final AnnouncementMapper announcementMapper;
+    private final AnnouncementCategoryService announcementCategoryService;
     @Lazy
     private final MessageService messageService;
     private final UserAuthenticatedServiceImp authenticatedUser;
 
-    public AnnouncementServiceImp(AnnouncementRepository announcementRepository, AnnouncementMapper announcementMapper, @Lazy MessageService messageService, UserAuthenticatedServiceImp authenticatedUser) {
+    public AnnouncementServiceImp(AnnouncementRepository announcementRepository, AnnouncementMapper announcementMapper, AnnouncementCategoryService announcementCategoryService, @Lazy MessageService messageService, UserAuthenticatedServiceImp authenticatedUser) {
         this.announcementRepository = announcementRepository;
         this.announcementMapper = announcementMapper;
+        this.announcementCategoryService = announcementCategoryService;
         this.messageService = messageService;
         this.authenticatedUser = authenticatedUser;
     }
@@ -36,7 +39,8 @@ public class AnnouncementServiceImp implements AnnouncementService {
     @Override
     @Transactional
     public AnnouncementEntity create(AnnouncementRequest announcementRequest) {
-        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest, authenticatedUser.me().getId());
+        AnnouncementCategoryEntity category = announcementCategoryService.getCategory(announcementRequest.getCategoryId());
+        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest, authenticatedUser.me().getId(), category);
         entity.setActive(true);
         return announcementRepository.save(entity);
     }
@@ -45,9 +49,10 @@ public class AnnouncementServiceImp implements AnnouncementService {
     @Transactional
     public AnnouncementEntity update(UUID announcementId, AnnouncementRequest announcementRequest) {
         validateAnnouncementFromUser(announcementId);
-        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest, authenticatedUser.me().getId());
+        AnnouncementCategoryEntity category = announcementCategoryService.getCategory(announcementRequest.getCategoryId());
+        AnnouncementEntity entity = announcementMapper.toEntity(announcementRequest, authenticatedUser.me().getId(), category);
         entity.setId(announcementId);
-        entity.setCategory(AnnouncementCategory.getEnum(announcementRequest.getCategory().name()));
+        entity.setAnnouncementCategory(announcementCategoryService.getCategory(announcementRequest.getCategoryId()));
         entity.setDescription(announcementRequest.getDescription());
         entity.setSaleValue(announcementRequest.getSaleValue());
         return announcementRepository.save(entity);
